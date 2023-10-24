@@ -63,11 +63,11 @@ const getAdminLogin = async (request, response, next) => {
                     }
                     const accessToken = JWT.sign(encryptData, serverConfig.database.securitykey, {
                         algorithm: 'HS256',
-                        expiresIn: '15m'
+                        expiresIn: '1h'
                     });
                     const refreshToken = JWT.sign(encryptData, serverConfig.database.securitykey, {
                         algorithm: 'HS256',
-                        expiresIn: '30m'
+                        expiresIn: '1h'
                     });
 
                     adminLoginData['token'] = accessToken;
@@ -189,7 +189,7 @@ const getAdminAndSettingsLogout = async (request, response, next) => {
                 error: false,
                 statusCode: 200,
                 message: 'Admin logout successful',
-                data: null
+                data: resData
             }
         }).catch(errData => {
             message = message || 'Error while unable to logout the admin session';
@@ -396,7 +396,7 @@ const updateAdminPassword = async (request, response, next) => {
                 error: false,
                 statusCode: 200,
                 message: 'Admin password is updated successful',
-                data: null
+                data: resData
             }
         }).catch(errData => {
             message = message || 'Error while updating admin password';

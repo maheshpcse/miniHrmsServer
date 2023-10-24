@@ -5,6 +5,7 @@ const SAVE_AUDIT_EMPLOYEE_ADMIN_LOGIN = "save_audit_employee_admin_login";
 const GET_ADMIN_SETTINGS_LOGIN_OR_LOGOUT = "get_admin_settings_login_or_logout";
 const GET_VALIDATE_ADMIN_EMAIL = "get_validate_admin_email";
 const UPDATE_ADMIN_PASSWORD = "update_admin_password";
+const SAVE_LOGIN_ENCRYPT_DATA = "save_login_encrypt_data";
 
 // TODO
 const GET_ADMIN_SETTINGS_DATA = "get_admin_settings_data";
@@ -22,6 +23,7 @@ module.exports = {
     GET_ADMIN_SETTINGS_LOGIN_OR_LOGOUT,
     GET_VALIDATE_ADMIN_EMAIL,
     UPDATE_ADMIN_PASSWORD,
+    SAVE_LOGIN_ENCRYPT_DATA,
     // TODO
     GET_ADMIN_SETTINGS_DATA,
     GET_ADMIN_AND_SETTINGS_LOGOUT,

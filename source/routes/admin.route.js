@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dbConfig = require('../configs/db.config.js');
 const authAdminCtrl = require('../controllers/authAdmin.controller.js');
+const adminFormsCtrl = require('../controllers/adminForms.controller.js');
 
 // Server routes
 router.get('/', (request, response, next) => {
@@ -18,5 +19,7 @@ router.post('/get_admin_login', authAdminCtrl.getAdminLogin);
 router.post('/admin_and_settings_logout', authAdminCtrl.validateAdminLogin, authAdminCtrl.getAdminAndSettingsLogout);
 router.post('/get_validate_admin_email', authAdminCtrl.getValidateAdminEmail);
 router.post('/update_admin_password', authAdminCtrl.updateAdminPassword);
+
+router.post('/save_login_encrypt_data', adminFormsCtrl.saveLoginEncryptData);
 
 module.exports = router;
