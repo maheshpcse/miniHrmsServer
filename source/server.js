@@ -16,6 +16,7 @@ const serverConfig = require('./configs/server.config.js');
 const dbConfig = require('./configs/db.config.js');
 const Knexx = require('./configs/knex.js');
 const adminRoutes = require('./routes/admin.route.js');
+var moment = require('moment-timezone');
 
 Model.knex(Knexx.knex);
 const app = express();

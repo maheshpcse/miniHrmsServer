@@ -13,8 +13,15 @@ const selectDataSP = function (spName, inputParams, outputParams) {
             return Knexx.knex.raw(finalSP, inputParams);
         });
         mod.then(result => {
-            result = result && result.length && result[0].length ? result[0][0] : [];
-            resolve(result);
+            if (result && result.length && result[0].length && result[0][0].length) {
+                if (result[0][0].length > 1) {
+                    resolve(result);
+                } else {
+                    resolve(result[0][0]);
+                }
+            } else {
+                resolve([]);
+            }
         }).catch(error => {
             reject(error);
         });

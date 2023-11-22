@@ -1,9 +1,89 @@
 require('./source/server.js');
 
+// var _achFees = 'test data';
+// var isACHFeeTrue = false;
+
+// if(_achFees != null && _achFees != undefined)
+// isACHFeeTrue = true;
+
+// console.log('isACHFeeTrue isss:', isACHFeeTrue);
+
+// var fees = 'OB-2026';
+// console.log(fees.split('-')[1].split(''));
+
+// if (fees && fees.split('-')[1].split('')[0] != '1') {
+//     console.log('Fees validation failed');
+// } else {
+//     console.log('Fess validation success');
+// }
+
+// const _ = require('underscore');
+
+// var discounts = [
+//     {
+//         "discItemCode": "OB-1026",
+//         "discRatePercent": 10,
+//         "discPerItemAmount": 10
+//     },
+//     {
+//         "discItemCode": "OB-1029",
+//         "discRatePercent": 10,
+//         "discPerItemAmount": 10
+//     },
+//     {
+//         "discItemCode": "OB-1026",
+//         "discRatePercent": 0.002,
+//         "discPerItemAmount": ""
+//     },
+//     {
+//         "discItemCode": "OB-1026",
+//         "discRatePercent": "0.003",
+//         "discPerItemAmount": "2"
+//     }
+// ];
+
+// var groupByNames = _.groupBy(discounts, 'discItemCode') || {};
+// // console.log('groupByNames', groupByNames);
+
+// let count = {};
+
+// let abc = [];
+// for (let i = 0; i < discounts.length; i += 1) {
+//     // if (groupByNames.hasOwnProperty(discounts[i]['discItemCode']) && groupByNames[discounts[i]['discItemCode']].length > 1) {
+//     //     console.log('duplicate found', discounts[i]['discItemCode'], i);
+//     //     count[i] = i;
+//     // }
+//     // if (Object.keys(count).length > 1) {
+//     //     let duplicateArr = Object.keys(count);
+//     //     console.log('index isss:', duplicateArr[1]);
+//     //     count = {};
+//     // }
+//     if (abc.includes(discounts[i]['discItemCode'])) {
+//         console.log('duplicate found', i);
+//     } else {
+//         abc.push(discounts[i]['discItemCode']);
+//         console.log(abc);
+//     }
+// }
+
+// const arrowFuc = () => arguments.length;
+// console.log(arrowFuc());
+
+// const moment = require('moment');
+// const moment_timezone = require('moment-timezone');
+
+// var currentTime = moment('2023-11-20 03:33:16').format('DD/MM/YYYY HH:mm:ss');
+// var momentTime = moment(new Date());
+// var timezoneTime = momentTime.tz('America/Chicago').format('DD/MM/YYYY HH:mm:ss');
+
+// console.log('currentTime isss:', currentTime);
+// console.log('momentTime isss:', momentTime, moment.tz.guess(), momentTime.isLocal());
+// console.log('timezoneTime isss:', timezoneTime);
+
 // var mccCode = "!@23";
 // var reg = /^\d+$/;
 
-// if ((mccCode && typeof(mccCode) == 'string' && mccCode.toString().trim() != '') && 
+// if ((mccCode && typeof(mccCode) == 'string' && mccCode.toString().trim() != '') &&
 //     !(mccCode && typeof(mccCode) == 'string' && mccCode.length == 4 && typeof(Number(mccCode)) == 'number' && reg.test(mccCode))) {
 //     console.log('MCC code Validation failed.');
 // } else {
