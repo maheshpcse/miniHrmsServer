@@ -14,7 +14,7 @@ const selectDataSP = function (spName, inputParams, outputParams) {
         });
         mod.then(result => {
             if (result && result.length && result[0].length && result[0][0].length) {
-                if (result[0][0].length > 1) {
+                if (result[0][0].length > 0) {
                     resolve(result);
                 } else {
                     resolve(result[0][0]);

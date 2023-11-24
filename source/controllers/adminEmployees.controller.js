@@ -16,10 +16,10 @@ const getLoginHistoryData = async (request, response, next) => {
 
     try {
         let { limit, offset } = request.body;
-        offset = (offset - 1) * limit;
+        // offset = (offset - 1) * limit;
 
         await userSP.selectDataSP(spConfig.GET_LOGIN_HISTORY_DATA, [limit, offset], null).then(async resData => {
-            // console.log('Get login history resData isss:', resData);
+            console.log('Get login history resData isss:', resData);
 
             if (resData && resData.length) {
                 for (const item of resData[0][0]) {

@@ -21,7 +21,8 @@ const getAdminLogin = async (request, response, next) => {
             console.log('Get admin login resData isss', resData);
             
             if (resData && resData.length > 0) {
-                const adminLoginData = Object.assign({}, resData[0]) || {};
+                const adminLoginData = Object.assign({}, resData[0][0][0]) || {};
+                // console.log('adminLoginData isss:', adminLoginData);
                 adminLoginData['role'] = adminLoginData['roleName'] || '';
 
                 // Validate Password expiry date
@@ -141,7 +142,7 @@ const validateAdminLogin = async (request, response, next) => {
                 await userSP.selectDataSP(spConfig.GET_ADMIN_LOGIN, [decoded.adminLoginName], null).then(async resData => {
                     console.log('Get admin login resData isss', resData);
 
-                    adminLoginData = resData && resData.length ? resData[0] : {};
+                    adminLoginData = resData && resData.length ? resData[0][0][0] : {};
 
                     if (adminLoginData && Object.keys(adminLoginData).length == 0) {
                         message = message || 'Admin Login data is invalid or not found';

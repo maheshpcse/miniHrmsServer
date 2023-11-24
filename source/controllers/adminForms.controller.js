@@ -60,7 +60,10 @@ const getLoginEncryptData = async (request, response, next) => {
     let message = '';
 
     try {
-        await userSP.selectDataSP(spConfig.GET_LOGIN_ENCRYPT_DATA, [], null).then(async resData => {
+        let { limit, offset } = request.body;
+        // offset = (offset - 1) * limit;
+
+        await userSP.selectDataSP(spConfig.GET_LOGIN_ENCRYPT_DATA, [limit, offset], null).then(async resData => {
             console.log('Get login encrypt resData isss:', resData);
 
             result = {
