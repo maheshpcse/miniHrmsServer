@@ -8,6 +8,8 @@ const UPDATE_ADMIN_PASSWORD = "update_admin_password";
 const SAVE_LOGIN_ENCRYPT_DATA = "save_login_encrypt_data";
 const GET_LOGIN_ENCRYPT_DATA = "get_login_encrypt_data";
 const UPDATE_LOGIN_ENCRYPT_DATA_STATUS = "update_login_encrypt_data_status";
+const GET_ALL_EMPLOYEES_DATA = "get_all_employees_data";
+const GET_EMPLOYEE_DATA_BY_ID = "get_employee_data_by_id";
 const GET_LOGIN_HISTORY_DATA = "get_login_history_data";
 
 // TODO
@@ -29,6 +31,8 @@ module.exports = {
     SAVE_LOGIN_ENCRYPT_DATA,
     GET_LOGIN_ENCRYPT_DATA,
     UPDATE_LOGIN_ENCRYPT_DATA_STATUS,
+    GET_ALL_EMPLOYEES_DATA,
+    GET_EMPLOYEE_DATA_BY_ID,
     GET_LOGIN_HISTORY_DATA,
     
     // TODO

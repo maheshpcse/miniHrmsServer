@@ -128,6 +128,9 @@ const addDefaultAdminLoginData = async (request, response, next) => {
     return response.status(200).json(result);
 }
 
+// add sample employees data - POST METHOD
+
+
 module.exports = {
     connection,
     checkDatabaseConnection,

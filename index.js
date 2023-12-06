@@ -1,5 +1,86 @@
 require('./source/server.js');
 
+// const { faker } = require('@faker-js/faker');
+// const moment = require('moment');
+// let startID = 7;
+
+// for (let i = 0; i < 5; i += 1) {
+//     let address = {
+//         Address: faker.address.streetAddress(),
+//         City: faker.address.city(),
+//         State: faker.address.state(),
+//         Country: faker.address.country(),
+//         Pincode: faker.address.zipCode('######')
+//     }
+//     let profile = {
+//         Image: faker.image.avatar(),
+//         Mobile: faker.phone.phoneNumber('922-###-###'),
+//         DateOfBirth: moment(faker.date.past(25)).format('YYYY-MM-DD')
+//     }
+//     startID = startID + i;
+//     const gender = faker.name.gender();
+//     const firstName = faker.name.firstName(gender);
+//     const lastName = faker.name.lastName(gender);
+//     const email = faker.internet.email(firstName,lastName);
+//     let empData = {
+//         userId: null,
+//         empId: `EMP${startID.toString().padStart(3,0)}`,
+//         firstName: firstName,
+//         lastName: lastName,
+//         userName: faker.internet.userName(firstName,lastName),
+//         email: email,
+//         address: JSON.stringify(address),
+//         profile: JSON.stringify(profile),
+//         roleName: 'employee',
+//         status: 1, 
+//         createdBy: 1, 
+//         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+//         updatedAt: null 
+//     }
+//     // console.log(empData);
+//     let insertQuery = 'INSERT INTO `employees`(`userId`,`empId`,`firstName`,`lastName`,`userName`,`email`,`address`,`profile`,`roleName`,`status`,`createdBy`,`createdAt`,`updatedAt`)';
+//     let values = insertQuery + ` SELECT ${empData.userId},'${empData.empId}','${empData.firstName}','${empData.lastName}','${empData.userName}','${empData.email}','${empData.address}','${empData.profile}','${empData.roleName}',${empData.status},${empData.createdBy},'${empData.createdAt}',${empData.updatedAt};`
+//     console.log(values);
+//     console.log('----------------------------------------------------');
+//     console.log('----------------------------------------------------');
+// }
+
+// var filemimetypes = [
+//     { 'extn': 'jpg', 'mimetype': 'image/jpeg' },
+//     { 'extn': 'jpeg', 'mimetype': 'image/jpeg' },
+//     { 'extn': 'xls', 'mimetype': 'application/vnd.ms-excel' },
+//     { 'extn': 'xlsx', 'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+//     { 'extn': 'pdf', 'mimetype': 'application/pdf' },
+//     { 'extn': 'png', 'mimetype': 'image/png' },
+//     { 'extn': 'doc', 'mimetype': 'application/msword' },
+//     { 'extn': 'docx', 'mimetype': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+//     { 'extn': 'octet-stream', 'mimetype': 'application/octet-stream' },
+//     { 'extn': 'excel', 'mimetype': 'application/vnd.ms-excel' },
+//     { 'extn': 'ppt', 'mimetype': 'application/vnd.ms-powerpoint' },
+//     { 'extn': 'pptx', 'mimetype': 'application/vnd.openxmlformats-officedocument.presentationml.presentation' },
+//     { 'extn': 'tiff', 'mimetype': 'image/tiff' },
+//     { 'extn': 'tif', 'mimetype': 'image/tiff' },
+//     { 'extn': 'svg', 'mimetype': 'image/svg+xml' },
+//     { 'extn': 'csv', 'mimetype': 'text/csv' },
+//     { 'extn': 'txt', 'mimetype': 'text/plain' },
+//     { 'extn': 'odp', 'mimetype': 'application/vnd.oasis.opendocument.presentation' },
+//     { 'extn': 'gif', 'mimetype': 'image/gif' },
+//     { 'extn': 'psd', 'mimetype': 'image/vnd.adobe.photoshop' },
+//     { 'extn': 'ai', 'mimetype': 'application/postscript' },
+//     { 'extn': 'eps', 'mimetype': 'application/postscript' },
+//     { 'extn': 'raw', 'mimetype': 'image/raw' }
+// ];
+
+// console.log('filemimetypes count isss:', filemimetypes.length);
+
+// let id = 0;
+// let startId = 3610001;
+// for (const item of filemimetypes) {
+//     // console.log(`CALL master_add_entity_type_master(${startId + id}, 361, "${item['mimetype']}", "${item['mimetype']}", "${item['extn']}", NULL, NULL);`);
+//     console.log(`CALL master_add_entity_type_master_company_mapping(${startId + id}, "${item['mimetype']}", "${item['extn']}", NULL, NULL, NULL, NULL);`);
+//     id += 1;
+// }
+
 // var _achFees = 'test data';
 // var isACHFeeTrue = false;
 

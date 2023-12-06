@@ -27,6 +27,8 @@ router.post('/get_login_encrypt_data', adminFormsCtrl.getLoginEncryptData);
 router.put('/update_login_encrypt_data_status', adminFormsCtrl.updateLoginEncryptDataStatus);
 
 // Admin Employees
+router.post('/get_all_employees_data', adminEmployeesCtrl.getAllEmployeesData);
+router.post('/get_employee_data_by_id', adminEmployeesCtrl.getEmployeeDataById);
 router.post('/get_login_history_data', adminEmployeesCtrl.getLoginHistoryData);
 
 module.exports = router;
