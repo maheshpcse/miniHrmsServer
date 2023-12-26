@@ -66,7 +66,7 @@ const getEmployeeDataById = async (request, response, next) => {
                 error: false,
                 statusCode: 200,
                 message: 'Get employee data by id successful',
-                data: resData && resData.length ? resData[0][0][0] : {}
+                data: resData && resData.length ? JSON.parse(resData[0][0][0]['employeeData']) : {}
             }
         }).catch(errData => {
             message = message || 'Error while getting employee data by id';

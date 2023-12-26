@@ -1,5 +1,28 @@
 require('./source/server.js');
 
+// var employees = [
+//     {
+//     "empOnboardDetailId":1,
+//     "employeeInfo":{"empId": "EMP002"},
+//     "onBoardStartDate":"2023-12-09 22:48:42",
+//     "approvedDate":null,
+//     "joiningDate":null,
+//     "approvedBy":null,
+//     "remarks":null,
+//     "status":"1",
+//     "createdBy":1,
+//     "createdAt":"2023-12-09 22:48:42",
+//     "updatedAt":null
+//     }];
+
+// var sqlquery = 'JSON_OBJECT(';
+
+// for (let [key,value] of Object.entries(employees[0])) {
+//     sqlquery = sqlquery + `'${key}',e.${key},`;
+// }
+// sqlquery = sqlquery + ')';
+// console.log('sqlquery isss:', sqlquery);
+
 // const { faker } = require('@faker-js/faker');
 // const moment = require('moment');
 // let startID = 7;
@@ -32,10 +55,10 @@ require('./source/server.js');
 //         address: JSON.stringify(address),
 //         profile: JSON.stringify(profile),
 //         roleName: 'employee',
-//         status: 1, 
-//         createdBy: 1, 
+//         status: 1,
+//         createdBy: 1,
 //         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
-//         updatedAt: null 
+//         updatedAt: null
 //     }
 //     // console.log(empData);
 //     let insertQuery = 'INSERT INTO `employees`(`userId`,`empId`,`firstName`,`lastName`,`userName`,`email`,`address`,`profile`,`roleName`,`status`,`createdBy`,`createdAt`,`updatedAt`)';
