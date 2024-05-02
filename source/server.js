@@ -18,6 +18,8 @@ const Knexx = require('./configs/knex.js');
 const adminRoutes = require('./routes/admin.route.js');
 var moment = require('moment-timezone');
 
+// var filePath = fs.readFileSync('./../');
+
 Model.knex(Knexx.knex);
 const app = express();
 

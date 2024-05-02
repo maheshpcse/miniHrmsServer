@@ -1,5 +1,197 @@
 require('./source/server.js');
 
+// var arr = [{name: 'mahesh'},12,-1,-1,{name: 'mahesh'}];
+// console.log([...new Set(arr)]);
+
+// const speakeasy = require('speakeasy'); 
+ 
+// // Generate a secret key with a length 
+// // of 20 characters 
+// const secret = speakeasy.generateSecret({ length: 20 }); 
+ 
+// // Generate a TOTP code using the secret key 
+// const code = speakeasy.totp({ 
+ 
+//     // Use the Base32 encoding of the secret key 
+//     secret: secret.base32, 
+ 
+//     // Tell Speakeasy to use the Base32  
+//     // encoding format for the secret key 
+//     encoding: 'base32'
+// }); 
+ 
+// // Log the secret key and TOTP code 
+// // to the console 
+// console.log('Secret: ', secret.base32); 
+// console.log('Code: ', code);
+
+// const moment = require('moment');
+// const _ = require('underscore');
+
+// var resultsSet = [
+//     {
+//         "count": 1,
+//         "processor": "Till Payments",
+//         "date": "28-Mar"
+//     },
+//     {
+//         "count": 0,
+//         "processor": null,
+//         "date": "29-Mar"
+//     },
+//     {
+//         "count": 0,
+//         "processor": null,
+//         "date": "30-Mar"
+//     },
+//     {
+//         "count": 0,
+//         "processor": null,
+//         "date": "31-Mar"
+//     },
+//     {
+//         "count": 0,
+//         "processor": null,
+//         "date": "01-Apr"
+//     },
+//     {
+//         "count": 0,
+//         "processor": null,
+//         "date": "02-Apr"
+//     },
+//     {
+//         "count": 0,
+//         "processor": null,
+//         "date": "03-Apr"
+//     }
+// ];
+
+// processors
+// var resultsSet = [
+//     {
+//         "count": 0,
+//         "processor": null,
+//         "date": "19-Dec"
+//     },
+//     {
+//         "count": 1,
+//         "processor": "IPS",
+//         "date": "20-Dec"
+//     },
+//     {
+//         "count": 1405,
+//         "processor": "JetPay",
+//         "date": "20-Dec"
+//     },
+//     {
+//         "count": 2,
+//         "processor": "Jetpay ACI",
+//         "date": "20-Dec"
+//     },
+//     {
+//         "count": 439,
+//         "processor": "TX-LLC",
+//         "date": "20-Dec"
+//     },
+//     {
+//         "count": 2,
+//         "processor": 'TSYS',
+//         "date": "21-Dec"
+//     },
+//     {
+//         "count": 0,
+//         "processor": null,
+//         "date": "22-Dec"
+//     },
+//     {
+//         "count": 0,
+//         "processor": null,
+//         "date": "23-Dec"
+//     },
+//     {
+//         "count": 41,
+//         "processor": 'Nuvei US',
+//         "date": "24-Dec"
+//     },
+//     {
+//         "count": 55,
+//         "processor": 'Nuvei CANADA',
+//         "date": "24-Dec"
+//     },
+//     {
+//         "count": 0,
+//         "processor": null,
+//         "date": "25-Dec"
+//     }
+// ];
+
+// let series = [];
+// let labels = _.groupBy(resultsSet, 'date');
+// console.log('labels isss:', labels);
+
+// let months = [];
+// months = Object.keys(labels);
+// console.log('months isss:', months);
+
+// let records = new Array();
+// for (let item of [0, 0, 0, 0, 0, 0, 0]) {
+//     records.push({
+//         date: ''
+//     });
+// }
+// console.log('records isss:', records);
+
+// let id = 0;
+// for (let item of months) {
+//     records[id]['date'] = item;
+//     for (let data of labels[item]) {
+//         if (data['processor']) {
+//             let dataSet = {
+//                 name: data['processor'],
+//                 data: [0, 0, 0, 0, 0, 0, 0]
+//             }
+//             dataSet.data[id] = data['count'];
+//             series.push(dataSet);
+//         }
+//     }
+//     let groupByProcessors = _.groupBy(labels[item], 'processor');
+//     console.log('groupByProcessors isss:', groupByProcessors);
+//     if (Object.keys(groupByProcessors).length != 1 && Object.keys(groupByProcessors)[0] != null) {
+//         for (let processor of Object.keys(groupByProcessors)) {
+//             if (processor) records[id][processor] = groupByProcessors[processor][0]['count'];
+//         }
+//     }
+//     id = id + 1;
+// }
+// console.log('final series isss:', series);
+// console.log('final records isss:', records);
+// End
+
+
+// var selectedYear = 2023;
+// var selectedMonth = 11;
+
+// var startDate = moment(`${selectedYear}-${selectedMonth.toString().padStart(2,0)}-01`).startOf('month').format('YYYY-MM-DD');
+// var endDate = moment(`${selectedYear}-${selectedMonth.toString().padStart(2,0)}-01`).endOf('month').format('YYYY-MM-DD');
+
+// console.log('startDate isss:', startDate);
+// console.log('endDate isss:', endDate);
+
+// var crypto = require("crypto-js");
+
+// const str = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZDg5MjMxMjc5OTkxYjJhNGMwMjdjMGIiLCJoc2giOiIkMmEkMTMkWk53Y0cubjdRZFIybDA3S1RHd2RoLlN0QksudW5GSFVGLkZnZ0tQTGlUV2pOVEFqVy9SMm0iLCJncmFudCI6ImFjY2VzcyIsImlhdCI6MTU2OTI2ODUwMiwiZXhwIjoxNjAwODI2MTAyfQ.PQcCoF9d25bBqr1U4IhJbylpnKTYiad3NjCh_LvMfLE~9~null~undefined~434ce0149ce42606d8746bd9`;
+
+// const cryptoInfo = crypto.AES.encrypt(JSON.stringify({ str }), 'secret').toString();
+
+// console.log({ cryptoInfo });
+// const info2 = crypto.AES.decrypt(cryptoInfo, 'secret').toString(crypto.enc.Utf8);
+
+// console.log({ info2 });
+
+// const info3 = JSON.parse(info2);
+
+// console.log({ str: info3.str });
+
 // var employees = [
 //     {
 //     "empOnboardDetailId":1,

@@ -293,7 +293,7 @@ const getValidateAdminEmail = async (request, response, next) => {
                                                 <tr>
                                                     <td style="padding: 40px 0px 0px;">
                                                         <div style="text-align: left;">
-                                                            <div style="padding-bottom: 0px;"><img src="./images/MiNi_one.png"
+                                                            <div style="padding-bottom: 0px;"><img src="http://localhost:7200/assets/images/mini_hrms_logo.png"
                                                                     alt="Company" style="width: 50%;"></div>
                                                         </div>
                                                         <div style="padding: 20px; background-color: rgb(255, 255, 255);">
