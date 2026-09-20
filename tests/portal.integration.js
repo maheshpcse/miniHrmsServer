@@ -33,6 +33,20 @@ async function request(url,method='GET',body,token){const response=await fetch('
  for(const [kind,payload] of catalog){const saved=await request('/resources/'+kind,'POST',payload,token);assert.strictEqual(saved.status,200,kind+': '+saved.message);}
  const encryption=await request('/resources/encryption','GET',null,token);assert(!('encryptKey' in encryption.data.list[0]));
  assert.strictEqual((await request('/resources/roles','POST',{name:'Bad',code:'bad',permissions:'superuser',status:1},token)).status,400);
+
+ const directory=await request('/resources/employees?limit=1','GET',null,token);assert.strictEqual(directory.data.count,1);assert(directory.data.list.every(row=>row.userId!==userId));
+ assert.strictEqual((await request('/resources/employees?q=test.admin','GET',null,token)).data.count,0);
+ assert.strictEqual((await request('/me','GET',null,token)).data.userId,userId);
+ const profile=await request('/me','PUT',{firstName:'Alexandra',lastName:'Morgan',userId:employeeId,roleName:'employee'},token);assert.strictEqual(profile.status,200);assert.strictEqual((await db('employees').where({userId}).first()).roleName,'admin');assert.strictEqual((await db('employees').where({userId:employeeId}).first()).firstName,'Jamie');
+ assert.strictEqual((await request('/me','PUT',{firstName:'   '},token)).status,400);
+ assert.strictEqual((await request('/notifications/unread','GET',null,token)).data.count,1);
+ assert.strictEqual((await request('/notifications/read','POST',{},token)).status,200);
+ assert.strictEqual((await request('/notifications/unread','GET',null,token)).data.count,0);
+ await db('portal_notifications').insert({name:'Private',description:'For another employee',audience:'personal',recipientId:employeeId,createdBy:userId});
+ assert.strictEqual((await request('/notifications/unread','GET',null,token)).data.count,0);
+ await db('portal_notifications').insert({name:'New company update',description:'For everyone',audience:'all',createdBy:userId});
+ assert.strictEqual((await request('/notifications/unread','GET',null,token)).data.count,1);
+ console.log('PASS: self-exclusion before pagination/search, own-profile allowlist, unread isolation and new notifications');
  console.log('PASS: migration, authenticated APIs, employee CRUD/search, catalogs and masked secrets');
  result=await request('/auth/signup','POST',{firstName:'Sam',lastName:'Rivera',userName:'sam.rivera',email:'sam@example.invalid',password:'Employee-Test-123!'});assert.strictEqual(result.status,200,result.message);
  assert.strictEqual((await request('/auth/login','POST',{adminLoginName:'sam.rivera',adminPassword:'Employee-Test-123!'})).status,403);

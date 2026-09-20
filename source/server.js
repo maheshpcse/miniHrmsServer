@@ -88,8 +88,15 @@ app.use('/api', portalRoutes.handlers.authenticate, (req,res,next) => {
 }, adminRoutes);
 app.use(portalRoutes.handlers.errorHandler);
 
-const server = app.listen(Number(process.env.PORT || 3663), process.env.HOST || '0.0.0.0', () => {
-    logger.info(`MiNi HRMS server is listening on http://${serverConfig.server.host}:${serverConfig.server.port}`);
+const listenPort = Number(process.env.PORT || 3663);
+const listenHost = process.env.HOST === 'localhost' ? '127.0.0.1' : (process.env.HOST || '0.0.0.0');
+const server = app.listen(listenPort, listenHost, () => {
+    logger.info('MiNi HRMS server is listening on http://' + listenHost + ':' + listenPort);
+});
+server.on('error', error => {
+    logger.error('Unable to start HRMS API (' + error.code + '). Check that its port is available.');
+    process.exitCode = 1;
+    Knexx.knex.destroy();
 });
 
 process.on('SIGTERM', () => {
