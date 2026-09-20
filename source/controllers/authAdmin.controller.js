@@ -6,10 +6,11 @@ const nodemailer = require('nodemailer');
 const serverConfig = require('../configs/server.config.js');
 const spConfig = require('../configs/spConfig.js');
 const userSP = require('../libraries/userSP.js');
+const logger = require('../configs/logger.config.js');
 
 // GET admin login - POST METHOD
 const getAdminLogin = async (request, response, next) => {
-    console.log('In getAdminLogin(), request body isss', request.body);
+    logger.info('In getAdminLogin(), request body isss', request.body);
 
     let result = {};
     let message = '';
@@ -18,16 +19,16 @@ const getAdminLogin = async (request, response, next) => {
         const { adminLoginName, adminPassword } = request.body;
 
         await userSP.selectDataSP(spConfig.GET_ADMIN_LOGIN, [adminLoginName], null).then(async resData => {
-            console.log('Get admin login resData isss', resData);
+            // logger.info('Get admin login resData isss', resData);
             
             if (resData && resData.length > 0) {
                 const adminLoginData = Object.assign({}, resData[0][0][0]) || {};
-                // console.log('adminLoginData isss:', adminLoginData);
+                // logger.info('adminLoginData isss:', adminLoginData);
                 adminLoginData['role'] = adminLoginData['roleName'] || '';
 
                 // Validate Password expiry date
                 const isPwdExpiry = moment().format('YYYY-MM-DD HH:mm:ss') <= adminLoginData.loginPasswordExpiryDate ? false : true;
-                console.log('is adminPassword Expiry isss', isPwdExpiry);
+                logger.info('is adminPassword Expiry isss', isPwdExpiry);
 
                 if (isPwdExpiry) {
                     message = message || 'AdminPassword is expired';
@@ -36,14 +37,14 @@ const getAdminLogin = async (request, response, next) => {
 
                 // Validate Password match
                 const isMatchPwd = await bcrypt.compare(adminPassword, adminLoginData.adminPassword);
-                console.log('is Match adminPassword isss', isMatchPwd);
+                logger.info('is Match adminPassword isss', isMatchPwd);
 
                 if (isMatchPwd) {
                     // Audit admin login data
                     const auditLoginPayload = [adminLoginData.empId,1,adminLoginData.lastLoginTime,null,null,request.ip];
 
                     await userSP.insertOrUpdateDataSP(spConfig.SAVE_AUDIT_EMPLOYEE_ADMIN_LOGIN, auditLoginPayload, null).then(async resData1 => {
-                        console.log('Get save audit admin login resData isss', resData1);
+                        // logger.info('Get save audit admin login resData isss', resData1);
                         if (resData1 && resData1.length > 0 && resData1[0]['audit_login_id'] <= 0) {
                             message = message || 'Admin data is not found';
                             throw new Error(message);
@@ -97,7 +98,7 @@ const getAdminLogin = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         result = {
             success: false,
@@ -113,14 +114,14 @@ const getAdminLogin = async (request, response, next) => {
 
 // Validate Admin login - POST METHOD
 const validateAdminLogin = async (request, response, next) => {
-    console.log('In validateAdmin(), request headers isss', request.headers);
+    logger.info('In validateAdmin(), request headers isss', request.headers);
 
     let adminLoginData = {};
     let message = '';
 
     try {
         let authorizedToken = request.headers['authorization'] || request.headers['x-access-token'];
-        console.log('authorizedToken isss:', authorizedToken);
+        logger.info('authorizedToken isss:', authorizedToken);
 
         if (!authorizedToken || authorizedToken === '') {
             message = message || 'Token is not found';
@@ -129,18 +130,18 @@ const validateAdminLogin = async (request, response, next) => {
             authorizedToken = authorizedToken.split(',')[0];
         }
 
-        // console.log('Final authorizedToken isss', authorizedToken);
+        // logger.info('Final authorizedToken isss', authorizedToken);
 
         await JWT.verify(authorizedToken, serverConfig.database.securitykey, async (err, decoded) => {
             if (err) {
-                // console.log('Error jwt token verification data isss:', err);
+                // logger.error('Error jwt token verification data isss:', err);
                 message = err && err.message ? err.message : 'Error while verifying the jwt token';
                 throw new Error(message);
             } else {
-                console.log('decoded data isss:', decoded);
+                logger.info('decoded data isss:', decoded);
 
                 await userSP.selectDataSP(spConfig.GET_ADMIN_LOGIN, [decoded.adminLoginName], null).then(async resData => {
-                    console.log('Get admin login resData isss', resData);
+                    // logger.info('Get admin login resData isss', resData);
 
                     adminLoginData = resData && resData.length ? resData[0][0][0] : {};
 
@@ -160,7 +161,7 @@ const validateAdminLogin = async (request, response, next) => {
             }
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         return response.status(200).json({
             success: false,
@@ -174,7 +175,7 @@ const validateAdminLogin = async (request, response, next) => {
 
 // GET admin and settings logout - POST METHOD
 const getAdminAndSettingsLogout = async (request, response, next) => {
-    console.log('In getAdminAndSettingsLogout(), request body isss:', request.body);
+    logger.info('In getAdminAndSettingsLogout(), request body isss:', request.body);
 
     let result = {};
     let message = '';
@@ -183,7 +184,7 @@ const getAdminAndSettingsLogout = async (request, response, next) => {
         const { adminLoginId, auditLoginId } = request.body;
 
         await userSP.insertOrUpdateDataSP(spConfig.GET_ADMIN_AND_SETTINGS_LOGOUT, [adminLoginId, auditLoginId], null).then(async resData => {
-            console.log('Get Admin and Settings logout resData isss:', resData);
+            // logger.info('Get Admin and Settings logout resData isss:', resData);
 
             result = {
                 success: true,
@@ -197,7 +198,7 @@ const getAdminAndSettingsLogout = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         result = {
             success: false,
@@ -213,7 +214,7 @@ const getAdminAndSettingsLogout = async (request, response, next) => {
 
 // GET validate admin email - POST METHOD
 const getValidateAdminEmail = async (request, response, next) => {
-    console.log('In getValidateAdminEmail(), request body isss:', request.body);
+    logger.info('In getValidateAdminEmail(), request body isss:', request.body);
 
     let result = {};
     let message = '';
@@ -222,7 +223,7 @@ const getValidateAdminEmail = async (request, response, next) => {
         const { adminEmail } = request.body;
 
         await userSP.selectDataSP(spConfig.GET_VALIDATE_ADMIN_EMAIL, [adminEmail], null).then(async resData => {
-            console.log('Get validate admin email resData isss:', resData);
+            // logger.info('Get validate admin email resData isss:', resData);
 
             const { isValidEmail = true, userName = null } = resData && resData.length > 0 ? resData[0] : { isValidEmail: false, userName: null };
 
@@ -250,6 +251,8 @@ const getValidateAdminEmail = async (request, response, next) => {
                     length: 6,
                     charset: 'numeric'
                 });
+
+                const logoPath = "https://minihrms.s3.us-east-1.amazonaws.com/images/company_logo_small.png?response-content-disposition=inline&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Security-Token=IQoJb3JpZ2luX2VjENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIHdew8mTRusdxoY4yWYgpvezTcXrmx6Ypkd05G3m9DP%2FAiEAs%2FUn%2BiC8Z%2BYkzAOSz0d1NtkoqCcaEQpCeCWpuqgxovUqwgMIuv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARABGgw1ODQ2MzY4NjI0NjciDLKd3jxvA%2FMrYbOFLCqWA%2B9ChFHz5cWZ%2FKsb25aafvhtD3YFuZ0VTOXet6%2BEIfyq2aCU4njxfdh1tmjJS1kbsU7llsoRxYCTR60Q%2BGZ41zjwody9rC9yc7vkYeTFqM4Tg6j3XkiNkKcbkOYrNJM9IsJrzfZU16ZHwawh0vrTC%2BVOKB3ezbYnlLdu%2BNCnjbvZ45mbBuInAeFLIzZRUItydOohT4%2B2OLRia0itTYC243kTOxmwOnpkCuB9ZR7Dj%2B3euZeTZ%2F1bD6ckvFJ75mEDUfl9xneOuA8BBTByK7JO9lBlhmWCBSFuW1DpN9ChIEBkOIns2adVNQCRGkh3ECap4AYC5KMNyrxtbX6ZqaL8dWriPWiXGtPEyfgowhMkizzHyf14GOHiGOpr1OZnzcECXkwyduV6lAjhU83RWcybepSyYOvty45g1Ps51BYvOtU9rl0g2UV7YSgaRe%2BiHc4uAyFwxEIeHrz4AIatRz4bCaeofXy8YkhrsckQlKekIsm4CR5OKIRahcVpJGo7w4v0VckDp7uGC2zSj3a%2Fo%2BTG3d8RcuQt17kwrO7TwgY63gKXiTHaqlWE9zk8VWxCz3xQ%2F8J%2FN%2FWPSvkX3xqRAOoXOn%2BUhyJahPMl%2FlZASk6eTq%2BKMDmZ068xNeV8DKFJSWQfd9SmNqbGBa2DlOE5QaV11KK58pG7orSFBVUmBYmDKB%2FbWplshKOOezj7G4aLMqrxebrspgKhfNGgB9cCsP90nmB30ah8VVaPHBy7MP8QRncgTbMi4YU3Kb0AI9GufffWb%2BlsFA8%2F3KFfJJeIqbpDW9ku1YCSrVPaTHKJPKl%2FSQVIKPPJLKb8kjSXsIPeAAoYzMeEb7hPRvnC0JpbHpG%2BUj377%2B5J4IlIcI309YxZqFWkF7dYRoNY2zwu4X2K6FdszMZQHs7MUwR%2BOE%2FTV6E8g8h5I9Dv701Mr2T7P67cGyHgwuS3IlcJOv%2BCA6YSOQHl4x34vzK6hRPu4aaxpjJxcTjN%2FT5fFblMCD%2B8PAafOvuTZjmQUanjin7DYd6Dlw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAYQHYSSABY336336N%2F20250620%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250620T091018Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=401eec9be3b341e19f4e20247ed5f3b8c678927ec7e63da6341279248aec5c5c";
 
                 const mailOptions = {
                     from: serverConfig.email.name,
@@ -293,7 +296,7 @@ const getValidateAdminEmail = async (request, response, next) => {
                                                 <tr>
                                                     <td style="padding: 40px 0px 0px;">
                                                         <div style="text-align: left;">
-                                                            <div style="padding-bottom: 0px;"><img src="http://localhost:7200/assets/images/mini_hrms_logo.png"
+                                                            <div style="padding-bottom: 0px;"><img src="${logoPath}"
                                                                     alt="Company" style="width: 50%;"></div>
                                                         </div>
                                                         <div style="padding: 20px; background-color: rgb(255, 255, 255);">
@@ -327,7 +330,7 @@ const getValidateAdminEmail = async (request, response, next) => {
 
                 await transporter.sendMail(mailOptions, async (err, info) => {
                     if (err) {
-                        console.log('Error while sending an email', err);
+                        logger.error('Error while sending an email', err);
                         // message = message || 'Error while sending an email';
                         // throw err;
                         result = {
@@ -339,7 +342,7 @@ const getValidateAdminEmail = async (request, response, next) => {
                         }
                         return response.status(200).json(result);
                     } else {
-                        console.log('Get sent mail info isss', info);
+                        logger.info('Get sent mail info isss', info);
 
                         result = {
                             success: true,
@@ -357,7 +360,7 @@ const getValidateAdminEmail = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         result = {
             success: false,
@@ -372,7 +375,7 @@ const getValidateAdminEmail = async (request, response, next) => {
 
 // TODO: UPDATE admin password - POST METHOD
 const updateAdminPassword = async (request, response, next) => {
-    console.log('In updateAdminPassword(), request body isss:', request.body);
+    logger.info('In updateAdminPassword(), request body isss:', request.body);
 
     let result = {};
     let message = '';
@@ -382,7 +385,7 @@ const updateAdminPassword = async (request, response, next) => {
 
         // step 1: hash and encrypt admin new password
         await bcrypt.hash(password, 10).then(async hash => {
-            console.log('hash new password isss:', hash);
+            logger.info('hash new password isss:', hash);
             hashPassword = hash;
         }).catch(hashErr => {
             message = message || 'Error while encrypt the new password';
@@ -390,7 +393,7 @@ const updateAdminPassword = async (request, response, next) => {
         });
 
         await userSP.insertOrUpdateDataSP(spConfig.UPDATE_ADMIN_PASSWORD, [adminEmail, hashPassword], null).then(async resData => {
-            console.log('Get update admin password resData isss:', resData);
+            // logger.info('Get update admin password resData isss:', resData);
 
             result = {
                 success: true,
@@ -404,7 +407,7 @@ const updateAdminPassword = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         result = {
             success: false,

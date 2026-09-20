@@ -1,9 +1,10 @@
-const mysql = require('mysql');
+const mysql = require(process.env.DB_CLIENT === 'mysql2' ? 'mysql2' : 'mysql');
 const bcrypt = require('bcrypt');
 const moment = require('moment');
 const serverConfig = require('./server.config.js');
 const spConfig = require('../configs/spConfig.js');
 const userSP = require('../libraries/userSP.js');
+const logger = require('./logger.config.js');
 
 const connection = mysql.createConnection({
     host: serverConfig.database.host,
@@ -23,7 +24,7 @@ const checkDatabaseConnection = async (request, response, next) => {
                 data: err
             }
             if (result.data.errno === 'ECONNREFUSED') {
-                console.log("Databse connection refused, check your database connection", err);
+                logger.error("Databse connection refused, check your database connection", err);
                 return response.status(200).json({
                     success: false,
                     statusCode: 500,
@@ -31,7 +32,7 @@ const checkDatabaseConnection = async (request, response, next) => {
                     data: err
                 });
             } else if (result.data.code === 'ER_ACCESS_DENIED_ERROR') {
-                console.log("Database access denied for user, check your database credentials", err);
+                logger.error("Database access denied for user, check your database credentials", err);
                 return response.status(200).json({
                     success: false,
                     statusCode: 500,
@@ -40,7 +41,7 @@ const checkDatabaseConnection = async (request, response, next) => {
                 });
             }
         } else if (data) {
-            console.log("Database connection established", data);
+            logger.info("Database connection established", data);
             return response.status(200).json({
                 success: true,
                 statusCode: 200,
@@ -53,7 +54,7 @@ const checkDatabaseConnection = async (request, response, next) => {
 
 // add default admin login data - POST METHOD
 const addDefaultAdminLoginData = async (request, response, next) => {
-    console.log('In addDefaultAdminLoginData(), request body isss', request.body);
+    logger.info('In addDefaultAdminLoginData(), request body isss', request.body);
 
     let result = {};
     let message = '';
@@ -78,7 +79,7 @@ const addDefaultAdminLoginData = async (request, response, next) => {
 
         // hash and encrypt admin password
         await bcrypt.hash(defaultAdminLoginData[1], 10).then(async hash => {
-            console.log('admin login hash password isss:', hash);
+            logger.info('admin login hash password isss:', hash);
             defaultAdminLoginData[1] = hash;
         }).catch(hashErr => {
             message = 'Error while encrypt the login password';
@@ -86,7 +87,7 @@ const addDefaultAdminLoginData = async (request, response, next) => {
         });
 
         await bcrypt.hash(defaultAdminLoginData[2], 10).then(async hash => {
-            console.log('admin settings hash password isss:', hash);
+            logger.info('admin settings hash password isss:', hash);
             defaultAdminLoginData[2] = hash;
         }).catch(hashErr => {
             message = 'Error while encrypt the settings password';
@@ -101,7 +102,7 @@ const addDefaultAdminLoginData = async (request, response, next) => {
         });
         
         await userSP.insertOrUpdateDataSP(spConfig.ADD_DEFAULT_ADMIN_LOGIN_DATA, [...defaultAdminInfoData ,...defaultAdminLoginData], null).then(resData => {
-            console.log('Get added default admin login resData isss', resData);
+            logger.info('Get added default admin login resData isss', resData);
 
             result = {
                 success: true,
@@ -115,7 +116,7 @@ const addDefaultAdminLoginData = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        logger.error('Error at try catch API result', error);
         result = {
             success: false,
             error: true,

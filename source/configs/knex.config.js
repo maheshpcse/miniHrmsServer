@@ -1,7 +1,8 @@
+const path = require('path');
 const serverConfig = require('./server.config.js');
 
 module.exports = {
-    client: 'mysql',
+    client: process.env.DB_CLIENT || 'mysql',
     connection: {
         host: serverConfig.database.host,
         port: serverConfig.database.port,
@@ -18,7 +19,7 @@ module.exports = {
     acquireTimeout: 60 * 1000,
     debug: false,
     migrations: {
-        directory: '../db_migrations'
+        directory: path.resolve(__dirname, '../../db_migrations')
     },
     seeds: {
         directory: '../seeds'

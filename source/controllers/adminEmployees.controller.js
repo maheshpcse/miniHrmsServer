@@ -6,11 +6,11 @@ const nodemailer = require('nodemailer');
 const serverConfig = require('../configs/server.config.js');
 const spConfig = require('../configs/spConfig.js');
 const userSP = require('../libraries/userSP.js');
+const logger = require('../configs/logger.config.js');
 
 // GET all employees data - POST METHOD
 const getAllEmployeesData = async (request, response, next) => {
-    console.log('In getAllEmployeesData(), request body isss:', request.body);
-
+    logger.info('In getAllEmployeesData(), request body isss:', request.body);
     let result = {};
     let message = '';
 
@@ -19,7 +19,7 @@ const getAllEmployeesData = async (request, response, next) => {
         // offset = (offset - 1) * limit;
 
         await userSP.selectDataSP(spConfig.GET_ALL_EMPLOYEES_DATA, [limit, offset], null).then(async resData => {
-            console.log('Get all employees resData isss:', resData);
+            // logger.info('Get all employees resData isss:', resData);
 
             result = {
                 success: true,
@@ -36,7 +36,7 @@ const getAllEmployeesData = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         result = {
             success: false,
@@ -52,14 +52,14 @@ const getAllEmployeesData = async (request, response, next) => {
 
 // GET employee data by id - POST METHOD
 const getEmployeeDataById = async (request, response, next) => {
-    console.log('In getEmployeeDataById(), request body isss:', request.body);
+    logger.info('In getEmployeeDataById(), request body isss:', request.body);
 
     let result = {};
     let message = '';
 
     try {
         await userSP.selectDataSP(spConfig.GET_EMPLOYEE_DATA_BY_ID, [request.body.empId], null).then(async resData => {
-            console.log('Get employee data by id resData isss:', resData);
+            // logger.info('Get employee data by id resData isss:', resData);
 
             result = {
                 success: true,
@@ -73,7 +73,7 @@ const getEmployeeDataById = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         result = {
             success: false,
@@ -89,7 +89,7 @@ const getEmployeeDataById = async (request, response, next) => {
 
 // GET login history data - POST METHOD
 const getLoginHistoryData = async (request, response, next) => {
-    console.log('In getLoginHistoryData(), request body isss:', request.body);
+    logger.info('In getLoginHistoryData(), request body isss:', request.body);
 
     let result = {};
     let message = '';
@@ -99,7 +99,7 @@ const getLoginHistoryData = async (request, response, next) => {
         // offset = (offset - 1) * limit;
 
         await userSP.selectDataSP(spConfig.GET_LOGIN_HISTORY_DATA, [limit, offset], null).then(async resData => {
-            console.log('Get login history resData isss:', resData);
+            // logger.info('Get login history resData isss:', resData);
 
             if (resData && resData.length) {
                 for (const item of resData[0][0]) {
@@ -125,7 +125,7 @@ const getLoginHistoryData = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         result = {
             success: false,

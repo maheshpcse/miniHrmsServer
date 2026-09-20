@@ -1,2 +1,10 @@
 node_modules
-package-lock.json
+
+.env
+.env.*
+!.env.production.example
+logs/
+uploads/
+
+# Local runtime output
+*.log

@@ -1,0 +1,12 @@
+node_modules
+.git
+.github
+.env
+.env.*
+!.env.production.example
+npm-debug.log*
+logs
+tmp
+uploads
+database/backups
+*.sql

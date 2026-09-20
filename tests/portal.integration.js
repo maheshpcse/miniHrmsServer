@@ -1,0 +1,66 @@
+﻿'use strict';
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const Knex=require('knex'),express=require('express'),bcrypt=require('bcrypt');
+const createPortal=require('../source/portal/router');
+const testDir=process.env.MINI_HRMS_TEST_DATADIR;
+if(!testDir||!path.basename(testDir).startsWith('minihrms-migration-test-'))throw new Error('Use an isolated migration-test datadir.');
+const connection={host:'127.0.0.1',port:17360,user:'root',password:'',charset:'utf8mb4'};
+const admin=Knex({client:process.env.DB_CLIENT||'mysql',connection,pool:{min:0,max:1}});let db,server;
+const normal=s=>path.resolve(s).replace(/\\/g,'/').replace(/\/$/,'').toLowerCase();
+const secret='test-only-workspace-secret-not-for-production';
+const sent=[];
+async function request(url,method='GET',body,token){const response=await fetch('http://127.0.0.1:17663/api/portal'+url,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},...(body?{body:JSON.stringify(body)}:{})});let data=await response.json();return {status:response.status,...data};}
+(async()=>{
+ const [instance]=await admin.raw('SELECT @@datadir AS dir');assert.strictEqual(normal(instance[0].dir),normal(testDir));
+ await admin.raw('DROP DATABASE IF EXISTS mini_hrms');await admin.raw('CREATE DATABASE mini_hrms CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci');
+ db=Knex({client:process.env.DB_CLIENT||'mysql',connection:{...connection,database:'mini_hrms'},pool:{min:0,max:4},migrations:{directory:path.resolve(__dirname,'../db_migrations')}});
+ await db.migrate.latest();assert.deepStrictEqual((await db.migrate.latest())[1],[]);
+ const hashed=await bcrypt.hash('Test-Workspace-123!',10);
+ const [userId]=await db('employees').insert({empId:'TEST_ADMIN',firstName:'Alex',lastName:'Morgan',userName:'test.admin',email:'admin@example.invalid',roleName:'admin',status:1,createdBy:1});
+ await db('admin_login').insert({empId:'TEST_ADMIN',adminLoginName:'test.admin',adminPassword:hashed,settingsPassword:hashed,passwordsInfo:'{}',createdBy:userId});
+ const app=express();app.use(require('cors')());app.use(express.json({limit:'100kb'}));app.use('/api/portal',createPortal({db,secret,mailer:async message=>sent.push(message)}));
+ server=await new Promise(resolve=>{const listener=app.listen(17663,'127.0.0.1',()=>resolve(listener));});
+ assert.strictEqual((await request('/dashboard')).status,401);
+ assert.strictEqual((await request('/auth/login','POST',{adminLoginName:'test.admin',adminPassword:'wrong'})).status,401);
+ const login=await request('/auth/login','POST',{adminLoginName:'test.admin',adminPassword:'Test-Workspace-123!'});assert.strictEqual(login.status,200);const token=login.data.token;assert(!('adminPassword' in login.data));
+ for(const kind of ['employees','login-history','menus','roles','permissions','attendance-types','leave-types','requests','notifications','encryption']){const result=await request('/resources/'+kind,'GET',null,token);assert.strictEqual(result.status,200,kind+': '+result.message);}
+ let result=await request('/resources/employees','POST',{empId:'TEST002',firstName:'Jamie',lastName:'Chen',userName:'jamie.chen',email:'jamie@example.invalid',roleName:'employee',status:1},token);assert.strictEqual(result.status,200,result.message);const employeeId=result.data.id;
+ result=await request('/resources/employees/'+employeeId,'PUT',{firstName:'Jamie',lastName:'Chen',userName:'jamie.chen',email:'jamie@example.invalid',roleName:'employee',status:3},token);assert.strictEqual(result.status,200,result.message);
+ assert.strictEqual((await request('/employees/TEST002','GET',null,token)).data.employeeInfo.status,3);
+ result=await request('/resources/employees?q=jamie&page=1&limit=1','GET',null,token);assert.strictEqual(result.data.count,1);
+ assert.strictEqual((await request('/resources/employees','POST',{empId:'TEST002',firstName:'J',userName:'dup',email:'other@example.invalid',roleName:'employee',status:1},token)).status,409);
+ const catalog=[['menus',{name:'People shortcut',code:'people',path:'/admin/employees/all-employees',status:1}],['roles',{name:'People analyst',code:'analyst',permissions:'employees:read',status:1}],['leave-types',{name:'Annual leave',code:'annual',allowance:20,paid:'yes',status:1}],['attendance-types',{attendanceName:'Core hours',attendanceCode:'CORE',attendanceType:'Online',logOnTime:'09:00',logOffTime:'17:00',status:1}],['encryption',{loginType:1,encryptType:'AES',encryptKey:'synthetic-key',status:1}],['notifications',{name:'Welcome to the workspace',description:'A calmer place for your people and their possibilities.',audience:'all'}]];
+ for(const [kind,payload] of catalog){const saved=await request('/resources/'+kind,'POST',payload,token);assert.strictEqual(saved.status,200,kind+': '+saved.message);}
+ const encryption=await request('/resources/encryption','GET',null,token);assert(!('encryptKey' in encryption.data.list[0]));
+ assert.strictEqual((await request('/resources/roles','POST',{name:'Bad',code:'bad',permissions:'superuser',status:1},token)).status,400);
+ console.log('PASS: migration, authenticated APIs, employee CRUD/search, catalogs and masked secrets');
+ result=await request('/auth/signup','POST',{firstName:'Sam',lastName:'Rivera',userName:'sam.rivera',email:'sam@example.invalid',password:'Employee-Test-123!'});assert.strictEqual(result.status,200,result.message);
+ assert.strictEqual((await request('/auth/login','POST',{adminLoginName:'sam.rivera',adminPassword:'Employee-Test-123!'})).status,403);
+ const access=(await request('/resources/requests','GET',null,token)).data.list.find(r=>r.kind==='access');
+ result=await request('/requests/'+access.id+'/review','PUT',{status:'approved'},token);assert.strictEqual(result.status,200,result.message);
+ assert.strictEqual((await request('/requests/'+access.id+'/review','PUT',{status:'approved'},token)).status,409);
+ const employeeLogin=await request('/auth/login','POST',{adminLoginName:'sam.rivera',adminPassword:'Employee-Test-123!'});assert.strictEqual(employeeLogin.status,200,employeeLogin.message);const employeeToken=employeeLogin.data.token;
+ assert.strictEqual((await request('/resources/employees','GET',null,employeeToken)).status,403);
+ assert.strictEqual((await request('/resources/roles','POST',{name:'Admin',code:'evil',permissions:'settings:write',status:1},employeeToken)).status,403);
+ assert.strictEqual((await request('/employees/TEST_ADMIN','GET',null,employeeToken)).status,403);
+ const own=await request('/employees/'+employeeLogin.data.empId,'GET',null,employeeToken);assert.strictEqual(own.status,200);
+ const submitted=await request('/resources/requests','POST',{name:'Time to recharge',kind:'leave',description:'A short break.',startDate:'2026-10-05',endDate:'2026-10-06'},employeeToken);assert.strictEqual(submitted.status,200,submitted.message);
+ assert.strictEqual((await request('/requests/'+submitted.data.id+'/review','PUT',{status:'approved'},employeeToken)).status,403);
+ assert.strictEqual((await request('/requests/'+submitted.data.id+'/review','PUT',{status:'approved'},token)).status,200);
+ const notices=await request('/resources/notifications','GET',null,employeeToken);assert(notices.data.list.some(n=>n.audience==='personal'));
+ console.log('PASS: signup approval, account activation, request review, privacy and permission enforcement');
+ assert.strictEqual((await request('/dashboard','GET',null,token)).data.completed,undefined);
+ console.log('PASS: HR-only dashboard excludes learning metrics');
+ const recovery=await request('/auth/forgot','POST',{adminEmail:'sam@example.invalid'});assert.strictEqual(recovery.status,200);assert(!('otp' in recovery.data));assert.strictEqual(sent.length,1);const code=sent[0].text.match(/\b\d{6}\b/)[0];
+ assert.strictEqual((await request('/auth/reset','POST',{challenge:recovery.data.challenge,code:'000000',password:'New-Employee-123!'})).status,400);
+ assert.strictEqual((await request('/auth/reset','POST',{challenge:recovery.data.challenge,code,password:'New-Employee-123!'})).status,200);
+ assert.strictEqual((await request('/dashboard','GET',null,employeeToken)).status,401);
+ assert.strictEqual((await request('/auth/reset','POST',{challenge:recovery.data.challenge,code,password:'Another-Password-123!'})).status,400);
+ assert.strictEqual((await request('/auth/login','POST',{adminLoginName:'sam.rivera',adminPassword:'New-Employee-123!'})).status,200);
+ await request('/auth/logout','POST',{},token);assert.strictEqual((await request('/dashboard','GET',null,token)).status,401);
+ console.log('PASS: recovery delivery adapter, invalid code rejection, single-use codes and session revocation');
+ // Reset only test rate limits so browser checks can exercise the seeded test accounts.
+ await db('portal_rate_limits').del();
+ if(process.env.KEEP_PORTAL_TEST_SERVER==='1'){console.log('TEST_SERVER_READY http://127.0.0.1:17663');return;}
+ await new Promise(resolve=>server.close(resolve));await db.destroy();await admin.destroy();
+})().catch(async error=>{console.error(error.stack);process.exitCode=1;if(server)await new Promise(resolve=>server.close(resolve));if(db)await db.destroy();await admin.destroy();});

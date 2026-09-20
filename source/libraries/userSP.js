@@ -3,12 +3,13 @@ const Promise = require('bluebird');
 const { objection } = require('objection');
 const Knexx = require('../configs/knex.js');
 const dbConfig = require('../configs/db.config.js');
+const logger = require('../configs/logger.config.js');
 
 // SELECT/READ data Stored Procedure
 const selectDataSP = function (spName, inputParams, outputParams) {
     return new Promise((resolve, reject) => {
         let finalSP = `CALL ${spName}(${generateInputs(inputParams.length)})`;
-
+        logger.info(`CALL ${spName}(${inputParams})`);
         let mod = Knexx.knex.transaction(trx => {
             return Knexx.knex.raw(finalSP, inputParams);
         });
@@ -41,7 +42,7 @@ const selectDataSP = function (spName, inputParams, outputParams) {
 const insertOrUpdateDataSP = function (spName, inputParams, outputParams) {
     return new Promise((resolve, reject) => {
         let finalSP = `CALL ${spName}(${generateInputs(inputParams.length)})`;
-
+        logger.info(`CALL ${spName}(${inputParams})`);
         let mod = Knexx.knex.transaction(trx => {
             return Knexx.knex.raw(finalSP, inputParams);
         });

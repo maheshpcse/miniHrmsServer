@@ -1,5 +1,14 @@
 require('./source/server.js');
 
+// TSYS Boarding
+// let tsysRequestTypes = {
+//     "AddMerchant": true,
+//     "AddTerminal": false,
+//     "SavePPMPricing": false
+// }
+
+
+
 // var arr = [{name: 'mahesh'},12,-1,-1,{name: 'mahesh'}];
 // console.log([...new Set(arr)]);
 
@@ -217,7 +226,7 @@ require('./source/server.js');
 
 // const { faker } = require('@faker-js/faker');
 // const moment = require('moment');
-// let startID = 7;
+// let startID = 12;
 
 // for (let i = 0; i < 5; i += 1) {
 //     let address = {
@@ -292,7 +301,9 @@ require('./source/server.js');
 // let startId = 3610001;
 // for (const item of filemimetypes) {
 //     // console.log(`CALL master_add_entity_type_master(${startId + id}, 361, "${item['mimetype']}", "${item['mimetype']}", "${item['extn']}", NULL, NULL);`);
-//     console.log(`CALL master_add_entity_type_master_company_mapping(${startId + id}, "${item['mimetype']}", "${item['extn']}", NULL, NULL, NULL, NULL);`);
+//     // console.log(`CALL master_add_entity_type_master_company_mapping(${startId + id}, "${item['mimetype']}", "${item['extn']}", NULL, NULL, NULL, NULL);`);
+//     // console.log(`UPDATE entity_type_master SET name = '${item['mimetype']}',description = '${item['mimetype']}',code= '${item['extn']}' WHERE entity_type_id = 361 AND id = ${startId + id};`);
+//     console.log(`UPDATE entity_type_master_company_mapping SET display_name = '${item['mimetype']}',code = '${item['extn']}' WHERE entity_type_master_id = ${startId + id} AND company_id = 20;`);
 //     id += 1;
 // }
 

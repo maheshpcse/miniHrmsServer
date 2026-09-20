@@ -6,10 +6,11 @@ const nodemailer = require('nodemailer');
 const serverConfig = require('../configs/server.config.js');
 const spConfig = require('../configs/spConfig.js');
 const userSP = require('../libraries/userSP.js');
+const logger = require('../configs/logger.config.js');
 
 // ADD or UPDATE login encrypt data - POST METHOD
 const saveLoginEncryptData = async (request, response, next) => {
-    console.log('In saveLoginEncryptData(), request body isss:', request.body);
+    logger.info('In saveLoginEncryptData(), request body isss:', request.body);
 
     let result = {};
     let inputParams = [];
@@ -21,10 +22,10 @@ const saveLoginEncryptData = async (request, response, next) => {
         for (const [key, value] of Object.entries(request.body)) {
             inputParams.push(value);
         }
-        console.log('Final inputParams isss:', inputParams);
+        // logger.info('Final inputParams isss:', inputParams);
 
         await userSP.insertOrUpdateDataSP(spConfig.SAVE_LOGIN_ENCRYPT_DATA, inputParams, null).then(async resData => {
-            console.log('Get saved login encrypt resData isss:', resData);
+            // logger.info('Get saved login encrypt resData isss:', resData);
 
             result = {
                 success: true,
@@ -38,7 +39,7 @@ const saveLoginEncryptData = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         result = {
             success: false,
@@ -54,7 +55,7 @@ const saveLoginEncryptData = async (request, response, next) => {
 
 // GET login encrypt data - POST METHOD
 const getLoginEncryptData = async (request, response, next) => {
-    console.log('In getLoginEncryptData(), request body isss:', request.body);
+    logger.info('In getLoginEncryptData(), request body isss:', request.body);
 
     let result = {};
     let message = '';
@@ -64,7 +65,7 @@ const getLoginEncryptData = async (request, response, next) => {
         // offset = (offset - 1) * limit;
 
         await userSP.selectDataSP(spConfig.GET_LOGIN_ENCRYPT_DATA, [limit, offset], null).then(async resData => {
-            console.log('Get login encrypt resData isss:', resData);
+            // logger.info('Get login encrypt resData isss:', resData);
 
             result = {
                 success: true,
@@ -81,7 +82,7 @@ const getLoginEncryptData = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         result = {
             success: false,
@@ -97,7 +98,7 @@ const getLoginEncryptData = async (request, response, next) => {
 
 // UPDATE login encrypt data status - POST METHOD
 const updateLoginEncryptDataStatus = async (request, response, next) => {
-    console.log('In updateLoginEncryptDataStatus(), request body isss:', request.body);
+    logger.info('In updateLoginEncryptDataStatus(), request body isss:', request.body);
 
     let result = {};
     let message = '';
@@ -106,7 +107,7 @@ const updateLoginEncryptDataStatus = async (request, response, next) => {
         const { loginEncDecDetailId, status } = request.body;
 
         await userSP.insertOrUpdateDataSP(spConfig.UPDATE_LOGIN_ENCRYPT_DATA_STATUS, [loginEncDecDetailId, status], null).then(async resData => {
-            console.log('Get updated login encrypt status resData isss:', resData);
+            // logger.info('Get updated login encrypt status resData isss:', resData);
 
             result = {
                 success: true,
@@ -120,7 +121,7 @@ const updateLoginEncryptDataStatus = async (request, response, next) => {
             throw errData;
         });
     } catch (error) {
-        console.log('Error at try catch API result', error);
+        // logger.error('Error at try catch API result', error);
 
         result = {
             success: false,

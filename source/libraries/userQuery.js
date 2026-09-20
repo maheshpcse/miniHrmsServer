@@ -3,6 +3,7 @@ const Promise = require('bluebird');
 const CryptoJS = require('crypto-js');
 const { objection } = require('objection');
 var knex = require('../configs/knex.js');
+const logger = require('../configs/logger.config.js');
 
 // Encrypt the text
 let encrypt = (text) => {
@@ -43,7 +44,7 @@ let insertOrUpdate = async (Model, data) => {
     const insertQuery = await Model.query().insert(data).toString()
     const onConflict = await Object.getOwnPropertyNames(firstData).map(c => c === Model.idColumn ? ',' : `${c} = VALUES(${c})`).join(',').replace(',,', '')
     const que = await `${insertQuery} ON DUPLICATE KEY UPDATE ${onConflict}`
-    // console.log('que', que.toString())
+    // logger.info('que', que.toString())
     return Model.raw(que);
 }
 
@@ -60,7 +61,7 @@ let insertOrUpdateWithRequest = async (request, Model, data) => {
       /\?/g,
       '\\?'
     )} ON DUPLICATE KEY UPDATE ${onConflict}`
-    console.log('que in  insertOrUpdate', que.toString());
+    logger.info('que in  insertOrUpdate', que.toString());
     return request.knex.raw(que);
 }
 
@@ -228,12 +229,12 @@ let transactingTable = function (tableName1, tableName2, data) {
         knex.knex.transaction((trx) => {
             knex.knex(tableName1).transacting(trx).insert(data).then((resp) => {
                 var id = resp[0];
-                console.log("response:", id);
-                console.log("trx:", trx);
+                logger.info("response:", id);
+                logger.info("trx:", trx);
                 // return transactionData(trx, id);
             }).then(trx.commit).catch(trx.rollback);
         }).then((resp) => {
-            console.log('Transaction complete.');
+            logger.info('Transaction complete.');
         }).catch((err) => {
             console.error('Transaction error.', err);
         });

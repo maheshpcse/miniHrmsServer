@@ -1,0 +1,648 @@
+[
+  {
+    "name": "employees",
+    "sql": "CREATE TABLE `employees` (\n  `userId` int NOT NULL AUTO_INCREMENT,\n  `empId` varchar(50) NOT NULL,\n  `firstName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,\n  `lastName` varchar(50) DEFAULT NULL,\n  `userName` varchar(50) NOT NULL,\n  `email` varchar(100) NOT NULL,\n  `address` json DEFAULT NULL COMMENT 'JSON Object(Address,City,State,Country,Pincode)',\n  `profile` json DEFAULT NULL COMMENT 'JSON Object(Image,Mobile,DateOfBirth)',\n  `roleName` varchar(20) NOT NULL DEFAULT 'employee' COMMENT 'enum(admin,employee,rm,pm,hr,fm,ceo,director)',\n  `status` tinyint(1) NOT NULL DEFAULT '2' COMMENT 'enum(0,1,2,3), {0:\"Blocked\",1:\"Active\",2:\"Pending\",3:\"Notice Period\"}',\n  `createdBy` int NOT NULL,\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`userId`),\n  UNIQUE KEY `empId` (`empId`),\n  UNIQUE KEY `userName` (`userName`),\n  UNIQUE KEY `email` (`email`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "userId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "empId",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "firstName",
+        "definition": "varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL"
+      },
+      {
+        "name": "lastName",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "userName",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "email",
+        "definition": "varchar(100) NOT NULL"
+      },
+      {
+        "name": "address",
+        "definition": "json DEFAULT NULL COMMENT 'JSON Object(Address,City,State,Country,Pincode)'"
+      },
+      {
+        "name": "profile",
+        "definition": "json DEFAULT NULL COMMENT 'JSON Object(Image,Mobile,DateOfBirth)'"
+      },
+      {
+        "name": "roleName",
+        "definition": "varchar(20) NOT NULL DEFAULT 'employee' COMMENT 'enum(admin,employee,rm,pm,hr,fm,ceo,director)'"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) NOT NULL DEFAULT '2' COMMENT 'enum(0,1,2,3), {0:\"Blocked\",1:\"Active\",2:\"Pending\",3:\"Notice Period\"}'"
+      },
+      {
+        "name": "createdBy",
+        "definition": "int NOT NULL"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "admin_login",
+    "sql": "CREATE TABLE `admin_login` (\n  `adminLoginId` int NOT NULL AUTO_INCREMENT,\n  `empId` varchar(50) NOT NULL,\n  `adminLoginName` varchar(50) NOT NULL,\n  `adminPassword` text NOT NULL COMMENT 'Password must be encrypted',\n  `settingsPassword` text NOT NULL COMMENT 'Password must be encrypted',\n  `loginStatus` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'enum(0,1,2,3), {0:\"Offline\",1:\"Online\",2:\"Pending Change Password\",3:\"Password Expired\"}',\n  `lastLoginTime` varchar(100) DEFAULT NULL COMMENT 'Datetime',\n  `passwordsInfo` json NOT NULL COMMENT 'JSON Object(Normal&Settings Password Updated Date&Expired Date Details)',\n  `createdBy` int NOT NULL,\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`adminLoginId`),\n  UNIQUE KEY `empId` (`empId`),\n  UNIQUE KEY `adminLoginName` (`adminLoginName`),\n  CONSTRAINT `admin_login_ibfk_1` FOREIGN KEY (`empId`) REFERENCES `employees` (`empId`),\n  CONSTRAINT `admin_login_ibfk_2` FOREIGN KEY (`adminLoginName`) REFERENCES `employees` (`userName`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "adminLoginId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "empId",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "adminLoginName",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "adminPassword",
+        "definition": "text NOT NULL COMMENT 'Password must be encrypted'"
+      },
+      {
+        "name": "settingsPassword",
+        "definition": "text NOT NULL COMMENT 'Password must be encrypted'"
+      },
+      {
+        "name": "loginStatus",
+        "definition": "tinyint(1) NOT NULL DEFAULT '0' COMMENT 'enum(0,1,2,3), {0:\"Offline\",1:\"Online\",2:\"Pending Change Password\",3:\"Password Expired\"}'"
+      },
+      {
+        "name": "lastLoginTime",
+        "definition": "varchar(100) DEFAULT NULL COMMENT 'Datetime'"
+      },
+      {
+        "name": "passwordsInfo",
+        "definition": "json NOT NULL COMMENT 'JSON Object(Normal&Settings Password Updated Date&Expired Date Details)'"
+      },
+      {
+        "name": "createdBy",
+        "definition": "int NOT NULL"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "attendance_types_details",
+    "sql": "CREATE TABLE `attendance_types_details` (\n  `attendTypeDetailId` int NOT NULL AUTO_INCREMENT,\n  `attendanceName` varchar(50) NOT NULL COMMENT 'Daily,Weekly,Bi-weekly,Monthly',\n  `attendanceCode` varchar(20) NOT NULL COMMENT 'DA,WA,BIA,MA',\n  `attendanceType` varchar(50) NOT NULL COMMENT 'Bio-Metric,Online',\n  `logOnTime` varchar(20) NOT NULL,\n  `logOffTime` varchar(20) NOT NULL,\n  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}',\n  `createdBy` int NOT NULL,\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`attendTypeDetailId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "attendTypeDetailId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "attendanceName",
+        "definition": "varchar(50) NOT NULL COMMENT 'Daily,Weekly,Bi-weekly,Monthly'"
+      },
+      {
+        "name": "attendanceCode",
+        "definition": "varchar(20) NOT NULL COMMENT 'DA,WA,BIA,MA'"
+      },
+      {
+        "name": "attendanceType",
+        "definition": "varchar(50) NOT NULL COMMENT 'Bio-Metric,Online'"
+      },
+      {
+        "name": "logOnTime",
+        "definition": "varchar(20) NOT NULL"
+      },
+      {
+        "name": "logOffTime",
+        "definition": "varchar(20) NOT NULL"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}'"
+      },
+      {
+        "name": "createdBy",
+        "definition": "int NOT NULL"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "audit_employee_admin_login",
+    "sql": "CREATE TABLE `audit_employee_admin_login` (\n  `auditEmpAdminLoginId` int NOT NULL AUTO_INCREMENT,\n  `empId` varchar(50) NOT NULL,\n  `loginType` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(1,2,3) {1:\"Normal\",2:\"Settings\",3:\"Social\"}',\n  `lastLoginTime` varchar(100) DEFAULT NULL COMMENT 'Datetime',\n  `lastLogoutTime` varchar(100) DEFAULT NULL COMMENT 'Datetime',\n  `sessionTime` varchar(50) DEFAULT NULL,\n  `ipAddress` varchar(100) DEFAULT NULL,\n  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}',\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  KEY `empId` (`empId`),\n  PRIMARY KEY (`auditEmpAdminLoginId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "auditEmpAdminLoginId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "empId",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "loginType",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(1,2,3) {1:\"Normal\",2:\"Settings\",3:\"Social\"}'"
+      },
+      {
+        "name": "lastLoginTime",
+        "definition": "varchar(100) DEFAULT NULL COMMENT 'Datetime'"
+      },
+      {
+        "name": "lastLogoutTime",
+        "definition": "varchar(100) DEFAULT NULL COMMENT 'Datetime'"
+      },
+      {
+        "name": "sessionTime",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "ipAddress",
+        "definition": "varchar(100) DEFAULT NULL"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}'"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "audit_employee_attendance",
+    "sql": "CREATE TABLE `audit_employee_attendance` (\n  `auditEmpAttendId` int NOT NULL AUTO_INCREMENT,\n  `empId` varchar(50) NOT NULL,\n  `outTime` datetime NOT NULL,\n  `inTime` datetime NOT NULL,\n  `sessionTime` varchar(255) NOT NULL,\n  `loginType` varchar(20) NOT NULL,\n  `awayReason` text NOT NULL,\n  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}',\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`auditEmpAttendId`),\n  KEY `empId` (`empId`),\n  CONSTRAINT `audit_employee_attendance_ibfk_1` FOREIGN KEY (`empId`) REFERENCES `employees` (`empId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "auditEmpAttendId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "empId",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "outTime",
+        "definition": "datetime NOT NULL"
+      },
+      {
+        "name": "inTime",
+        "definition": "datetime NOT NULL"
+      },
+      {
+        "name": "sessionTime",
+        "definition": "varchar(255) NOT NULL"
+      },
+      {
+        "name": "loginType",
+        "definition": "varchar(20) NOT NULL"
+      },
+      {
+        "name": "awayReason",
+        "definition": "text NOT NULL"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}'"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "employee_attendance_details",
+    "sql": "CREATE TABLE `employee_attendance_details` (\n  `empAttendDetailId` int NOT NULL AUTO_INCREMENT,\n  `empId` varchar(50) NOT NULL,\n  `loginTime` datetime NOT NULL,\n  `logoutTime` datetime NOT NULL,\n  `loginCode` varchar(10) NOT NULL,\n  `loginType` varchar(20) NOT NULL,\n  `attendanceStatus` tinyint(1) NOT NULL DEFAULT '2' COMMENT 'enum(0,1,2), {0:\"Failed\",1:\"Success\",2:\"Pending\"}',\n  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}',\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`empAttendDetailId`),\n  KEY `empId` (`empId`),\n  CONSTRAINT `employee_attendance_details_ibfk_1` FOREIGN KEY (`empId`) REFERENCES `employees` (`empId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "empAttendDetailId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "empId",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "loginTime",
+        "definition": "datetime NOT NULL"
+      },
+      {
+        "name": "logoutTime",
+        "definition": "datetime NOT NULL"
+      },
+      {
+        "name": "loginCode",
+        "definition": "varchar(10) NOT NULL"
+      },
+      {
+        "name": "loginType",
+        "definition": "varchar(20) NOT NULL"
+      },
+      {
+        "name": "attendanceStatus",
+        "definition": "tinyint(1) NOT NULL DEFAULT '2' COMMENT 'enum(0,1,2), {0:\"Failed\",1:\"Success\",2:\"Pending\"}'"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}'"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "employee_attendance_saved_details",
+    "sql": "CREATE TABLE `employee_attendance_saved_details` (\n  `empAttendSaveDetailId` int NOT NULL AUTO_INCREMENT,\n  `empId` varchar(50) NOT NULL,\n  `bioMetricId` varchar(255) DEFAULT NULL,\n  `onlineLoginId` varchar(255) DEFAULT NULL,\n  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}',\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`empAttendSaveDetailId`),\n  UNIQUE KEY `empId` (`empId`),\n  UNIQUE KEY `bioMetricId` (`bioMetricId`),\n  UNIQUE KEY `onlineLoginId` (`onlineLoginId`),\n  CONSTRAINT `employee_attendance_saved_details_ibfk_1` FOREIGN KEY (`empId`) REFERENCES `employees` (`empId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "empAttendSaveDetailId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "empId",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "bioMetricId",
+        "definition": "varchar(255) DEFAULT NULL"
+      },
+      {
+        "name": "onlineLoginId",
+        "definition": "varchar(255) DEFAULT NULL"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}'"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "employee_bank_details",
+    "sql": "CREATE TABLE `employee_bank_details` (\n  `empBankDetailId` int NOT NULL AUTO_INCREMENT,\n  `empId` varchar(50) NOT NULL,\n  `bankName` varchar(100) NOT NULL,\n  `accountNumber` varchar(50) NOT NULL,\n  `ifscCode` varchar(50) NOT NULL,\n  `branchName` varchar(100) NOT NULL,\n  `benificiaryName` varchar(100) DEFAULT NULL,\n  `accountHolderName` varchar(100) NOT NULL,\n  `accountType` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(1,2,3), {1:\"Saving\",2:\"Current\",3:\"Personal\"}',\n  `isCardActive` tinyint(1) DEFAULT NULL COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}',\n  `atmCardInfo` json DEFAULT NULL COMMENT 'JSON Object(ATM Card Details)',\n  `generalInfo` json DEFAULT NULL COMMENT 'JSON Object(General Details)',\n  `personalBanksInfo` json DEFAULT NULL COMMENT 'JSON Object(Personal Bank Details)',\n  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}',\n  `createdBy` int NOT NULL,\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`empBankDetailId`),\n  UNIQUE KEY `empId` (`empId`),\n  CONSTRAINT `employee_bank_details_ibfk_1` FOREIGN KEY (`empId`) REFERENCES `employees` (`empId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "empBankDetailId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "empId",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "bankName",
+        "definition": "varchar(100) NOT NULL"
+      },
+      {
+        "name": "accountNumber",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "ifscCode",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "branchName",
+        "definition": "varchar(100) NOT NULL"
+      },
+      {
+        "name": "benificiaryName",
+        "definition": "varchar(100) DEFAULT NULL"
+      },
+      {
+        "name": "accountHolderName",
+        "definition": "varchar(100) NOT NULL"
+      },
+      {
+        "name": "accountType",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(1,2,3), {1:\"Saving\",2:\"Current\",3:\"Personal\"}'"
+      },
+      {
+        "name": "isCardActive",
+        "definition": "tinyint(1) DEFAULT NULL COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}'"
+      },
+      {
+        "name": "atmCardInfo",
+        "definition": "json DEFAULT NULL COMMENT 'JSON Object(ATM Card Details)'"
+      },
+      {
+        "name": "generalInfo",
+        "definition": "json DEFAULT NULL COMMENT 'JSON Object(General Details)'"
+      },
+      {
+        "name": "personalBanksInfo",
+        "definition": "json DEFAULT NULL COMMENT 'JSON Object(Personal Bank Details)'"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}'"
+      },
+      {
+        "name": "createdBy",
+        "definition": "int NOT NULL"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "employee_basic_details",
+    "sql": "CREATE TABLE `employee_basic_details` (\n  `empBasicDetailId` int NOT NULL AUTO_INCREMENT,\n  `empId` varchar(50) NOT NULL,\n  `studyInfo` json DEFAULT NULL COMMENT 'JSON Object(Designation,Department)',\n  `familyInfo` json DEFAULT NULL COMMENT 'JSON Object(Family Details)',\n  `personalInfo` json DEFAULT NULL COMMENT 'JSON Object(Aadhar Card Number,Pan Card Number)',\n  `backupInfo` json DEFAULT NULL COMMENT 'JSON Object(Backup email, Backup Mobile)',\n  `socialMediaInfo` json DEFAULT NULL COMMENT 'JSON Object(Any Social Media Profile URL)',\n  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}',\n  `createdBy` int NOT NULL,\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`empBasicDetailId`),\n  UNIQUE KEY `empId` (`empId`),\n  CONSTRAINT `employee_basic_details_ibfk_1` FOREIGN KEY (`empId`) REFERENCES `employees` (`empId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "empBasicDetailId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "empId",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "studyInfo",
+        "definition": "json DEFAULT NULL COMMENT 'JSON Object(Designation,Department)'"
+      },
+      {
+        "name": "familyInfo",
+        "definition": "json DEFAULT NULL COMMENT 'JSON Object(Family Details)'"
+      },
+      {
+        "name": "personalInfo",
+        "definition": "json DEFAULT NULL COMMENT 'JSON Object(Aadhar Card Number,Pan Card Number)'"
+      },
+      {
+        "name": "backupInfo",
+        "definition": "json DEFAULT NULL COMMENT 'JSON Object(Backup email, Backup Mobile)'"
+      },
+      {
+        "name": "socialMediaInfo",
+        "definition": "json DEFAULT NULL COMMENT 'JSON Object(Any Social Media Profile URL)'"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}'"
+      },
+      {
+        "name": "createdBy",
+        "definition": "int NOT NULL"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "employee_login",
+    "sql": "CREATE TABLE `employee_login` (\n  `empLoginId` int NOT NULL AUTO_INCREMENT,\n  `empId` varchar(50) NOT NULL,\n  `empLoginName` varchar(50) NOT NULL,\n  `empPassword` text NOT NULL COMMENT 'Password must be encrypted',\n  `loginStatus` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'enum(0,1,2,3), {0:\"Offline\",1:\"Online\",2:\"Pending Change Password\",3:\"Password Expired\"}',\n  `lastLoginTime` varchar(100) DEFAULT NULL COMMENT 'Datetime',\n  `passwordUpdatedOn` datetime DEFAULT NULL COMMENT 'Datetime',\n  `passwordExpiryDate` datetime DEFAULT NULL COMMENT 'Datetime',\n  `createdBy` int NOT NULL,\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`empLoginId`),\n  UNIQUE KEY `empId` (`empId`),\n  UNIQUE KEY `empLoginName` (`empLoginName`),\n  CONSTRAINT `employee_login_ibfk_1` FOREIGN KEY (`empId`) REFERENCES `employees` (`empId`),\n  CONSTRAINT `employee_login_ibfk_2` FOREIGN KEY (`empLoginName`) REFERENCES `employees` (`userName`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "empLoginId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "empId",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "empLoginName",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "empPassword",
+        "definition": "text NOT NULL COMMENT 'Password must be encrypted'"
+      },
+      {
+        "name": "loginStatus",
+        "definition": "tinyint(1) NOT NULL DEFAULT '0' COMMENT 'enum(0,1,2,3), {0:\"Offline\",1:\"Online\",2:\"Pending Change Password\",3:\"Password Expired\"}'"
+      },
+      {
+        "name": "lastLoginTime",
+        "definition": "varchar(100) DEFAULT NULL COMMENT 'Datetime'"
+      },
+      {
+        "name": "passwordUpdatedOn",
+        "definition": "datetime DEFAULT NULL COMMENT 'Datetime'"
+      },
+      {
+        "name": "passwordExpiryDate",
+        "definition": "datetime DEFAULT NULL COMMENT 'Datetime'"
+      },
+      {
+        "name": "createdBy",
+        "definition": "int NOT NULL"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "employee_onboarding_details",
+    "sql": "CREATE TABLE `employee_onboarding_details` (\n  `empOnboardDetailId` int NOT NULL AUTO_INCREMENT,\n  `employeeInfo` json NOT NULL COMMENT 'JSON Object(FirstName,LastName,Email,Mobile)',\n  `onBoardStartDate` varchar(50) NOT NULL,\n  `approvedDate` varchar(50) DEFAULT NULL,\n  `joiningDate` varchar(50) DEFAULT NULL,\n  `approvedBy` varchar(50) DEFAULT NULL,\n  `remarks` text,\n  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}',\n  `createdBy` int NOT NULL,\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`empOnboardDetailId`),\n  KEY `approvedBy` (`approvedBy`),\n  CONSTRAINT `employee_onboarding_details_ibfk_1` FOREIGN KEY (`approvedBy`) REFERENCES `employees` (`empId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "empOnboardDetailId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "employeeInfo",
+        "definition": "json NOT NULL COMMENT 'JSON Object(FirstName,LastName,Email,Mobile)'"
+      },
+      {
+        "name": "onBoardStartDate",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "approvedDate",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "joiningDate",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "approvedBy",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "remarks",
+        "definition": "text"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}'"
+      },
+      {
+        "name": "createdBy",
+        "definition": "int NOT NULL"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "employee_process_details",
+    "sql": "CREATE TABLE `employee_process_details` (\n  `empProcessId` int NOT NULL AUTO_INCREMENT,\n  `empId` varchar(50) DEFAULT NULL,\n  `onBoardStartDate` varchar(50) DEFAULT NULL,\n  `approvedDate` varchar(50) DEFAULT NULL,\n  `approvedBy` varchar(50) DEFAULT NULL,\n  `approvedRemarks` text,\n  `rejectedDate` varchar(50) DEFAULT NULL,\n  `rejectedBy` varchar(50) DEFAULT NULL,\n  `rejectedRemarks` text,\n  `status` tinyint(1) DEFAULT '1' COMMENT 'enum(0,1), {0:\"On Hold\",1:\"Approved\",2:\"Rejected\"}',\n  `createdBy` int NOT NULL,\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`empProcessId`),\n  KEY `empId` (`empId`),\n  KEY `approvedBy` (`approvedBy`),\n  KEY `rejectedBy` (`rejectedBy`),\n  CONSTRAINT `employee_process_details_ibfk_1` FOREIGN KEY (`approvedBy`) REFERENCES `employees` (`empId`),\n  CONSTRAINT `employee_process_details_ibfk_2` FOREIGN KEY (`rejectedBy`) REFERENCES `employees` (`empId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "empProcessId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "empId",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "onBoardStartDate",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "approvedDate",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "approvedBy",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "approvedRemarks",
+        "definition": "text"
+      },
+      {
+        "name": "rejectedDate",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "rejectedBy",
+        "definition": "varchar(50) DEFAULT NULL"
+      },
+      {
+        "name": "rejectedRemarks",
+        "definition": "text"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) DEFAULT '1' COMMENT 'enum(0,1), {0:\"On Hold\",1:\"Approved\",2:\"Rejected\"}'"
+      },
+      {
+        "name": "createdBy",
+        "definition": "int NOT NULL"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "login_encrypt_details",
+    "sql": "CREATE TABLE `login_encrypt_details` (\n  `loginEncDecDetailId` int NOT NULL AUTO_INCREMENT,\n  `loginType` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(1,2,3) {1:\"Normal\",2:\"Settings\",3:\"Social\"}',\n  `encryptKey` text NOT NULL,\n  `encryptType` varchar(50) NOT NULL,\n  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}',\n  `createdBy` int NOT NULL,\n  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`loginEncDecDetailId`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;",
+    "columns": [
+      {
+        "name": "loginEncDecDetailId",
+        "definition": "int NOT NULL AUTO_INCREMENT"
+      },
+      {
+        "name": "loginType",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(1,2,3) {1:\"Normal\",2:\"Settings\",3:\"Social\"}'"
+      },
+      {
+        "name": "encryptKey",
+        "definition": "text NOT NULL"
+      },
+      {
+        "name": "encryptType",
+        "definition": "varchar(50) NOT NULL"
+      },
+      {
+        "name": "status",
+        "definition": "tinyint(1) NOT NULL DEFAULT '1' COMMENT 'enum(0,1), {0:\"Inactive\",1:\"Active\"}'"
+      },
+      {
+        "name": "createdBy",
+        "definition": "int NOT NULL"
+      },
+      {
+        "name": "createdAt",
+        "definition": "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "definition": "timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP"
+      }
+    ]
+  }
+]

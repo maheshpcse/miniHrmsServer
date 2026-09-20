@@ -2,6 +2,7 @@ const fs = require('fs');
 const spawn = require('child_process').spawn;
 const dumpFileName = `./dbBackup/mini_hrms.dump.sql`;
 const serverConfig = require('./server.config.js');
+const logger = require('./logger.config.js');
 
 const writeStream = fs.createWriteStream(dumpFileName);
 
@@ -16,8 +17,8 @@ dump
     .stdout
     .pipe(writeStream)
     .on('finish', function () {
-        console.log('Completed');
+        logger.info('Completed');
     })
     .on('error', function (err) {
-        console.log(err);
+        logger.error(err);
     });
