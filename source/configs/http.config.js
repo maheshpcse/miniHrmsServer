@@ -1,6 +1,9 @@
 'use strict';
 const production = process.env.NODE_ENV === 'production';
-const origins = (process.env.CORS_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
+// Use the public domain from Railway if CORS_ORIGINS is not set
+const defaultOrigin = process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : '';
+const corsOriginsEnv = process.env.CORS_ORIGINS || defaultOrigin || '';
+const origins = corsOriginsEnv.split(',').map(s => s.trim()).filter(Boolean);
 if (production && !origins.length) throw new Error('CORS_ORIGINS is required in production.');
 for (const origin of origins) {
     const url = new URL(origin);
@@ -18,3 +21,4 @@ module.exports = {
         maxAge: 600
     }
 };
+
