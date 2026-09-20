@@ -4,7 +4,7 @@ The Angular frontend runs on GitHub Pages. Express and MySQL run on Railway; Git
 
 ## 1. Backend on Railway
 
-Connect the **miniHrmsServer repository** to a Railway service. The checked-in `Dockerfile` and `railway.json` select Node 24, run `npm run db:migrate` before deployment, start `node index.js`, and check `/api/health/ready`.
+Connect the **miniHrmsServer repository** to a Railway service. The checked-in `Dockerfile` and `railway.json` select Node 24, run `npm run deploy:prepare` (configuration validation followed by migrations) before deployment, start `node index.js`, and check `/api/health/ready`.
 
 Add a MySQL 8 service in the same Railway project. Ensure a database named `mini_hrms` exists before deploying the API: migrations create tables, not the database. Set the database service's `MYSQL_DATABASE=mini_hrms` before its first initialization, or create that database using the database console. An existing volume is not renamed by changing that variable.
 
@@ -75,3 +75,5 @@ Files are prepared locally; no GitHub repository settings, Railway services or l
 - Backend migration/authentication/employee/request regression tests passed using MySQL2 against an isolated MySQL database.
 - Production backend startup, database readiness, allowed-origin preflight, rejected origins and protected API responses passed.
 - Docker image building and actual hosted deployment were not exercised locally; Docker is unavailable in this environment. The existing Angular HammerJS optimization warning is nonfatal.
+
+For the current backend-specific settings and diagnostics, see [RAILWAY.md](../RAILWAY.md).

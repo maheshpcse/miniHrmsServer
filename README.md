@@ -24,3 +24,6 @@ Requests log their method, path, status and elapsed milliseconds to this termina
 
 See [the Railway and GitHub Pages deployment guide](docs/DEPLOYMENT.md). Railway uses the Dockerfile and railway.json, runs migrations before deployment, and verifies database readiness.
 
+
+Current Railway service settings and troubleshooting: [RAILWAY.md](RAILWAY.md).
+

@@ -10,3 +10,10 @@ tmp
 uploads
 database/backups
 *.sql
+
+*.log
+coverage
+tests
+docs
+.vscode
+.idea

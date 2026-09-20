@@ -11,7 +11,10 @@
     "db:migrate:status": "knex --knexfile knexfile.js migrate:status",
     "db:test": "node database/tests/migrations.integration.js",
     "test:portal": "node tests/portal.integration.js",
-    "start:prod": "node index.js"
+    "start:prod": "node index.js",
+    "deploy:check": "node scripts/check-deployment.js",
+    "deploy:prepare": "node scripts/prepare-deployment.js",
+    "test:deployment": "node --test tests/deployment-config.test.js"
   },
   "keywords": [
     "MiNiHRMSServer"
