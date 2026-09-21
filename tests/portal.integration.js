@@ -47,6 +47,23 @@ async function request(url,method='GET',body,token){const response=await fetch('
  assert.strictEqual((await request('/notifications/unread','GET',null,token)).data.count,0);
  await db('portal_notifications').insert({name:'New company update',description:'For everyone',audience:'all',createdBy:userId});
  assert.strictEqual((await request('/notifications/unread','GET',null,token)).data.count,1);
+
+ const overview=(await request('/dashboard','GET',null,token)).data;assert.strictEqual(overview.people,1);assert.strictEqual(overview.active,0);assert(overview.recent.every(person=>person.empId!=='TEST_ADMIN'));assert(!overview.roles.some(role=>role.roleName==='admin'));
+ assert.strictEqual((await request('/resources/login-history','GET',null,token)).data.count,0);
+ const image=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jTioAAAAASUVORK5CYII=','base64');
+ async function upload(bytes,type='image/png',auth=token){const body=new FormData();body.append('avatar',new Blob([bytes],{type}),'photo.png');const response=await fetch('http://127.0.0.1:17663/api/portal/me/avatar',{method:'POST',headers:auth?{Authorization:'Bearer '+auth}:{},body});return {status:response.status,...await response.json()};}
+ await db('employees').where({userId}).update({profile:JSON.stringify({preference:'keep'})});
+ assert.strictEqual((await upload(image,'image/png',null)).status,401);
+ assert.strictEqual((await upload(Buffer.from('<svg/>'),'image/png')).status,400);
+ assert.strictEqual((await upload(Buffer.alloc(5*1024*1024+1))).status,400);
+ const largeImage=Buffer.concat([image.subarray(0,-12),Buffer.alloc(300*1024),image.subarray(-12)]);assert.strictEqual((await upload(largeImage)).status,200);
+ const photo=await upload(image);assert.strictEqual(photo.status,200,photo.message);assert(photo.data.avatarDataUrl.startsWith('data:image/png;base64,'));
+ assert.strictEqual((await request('/me','GET',null,token)).data.avatarDataUrl,photo.data.avatarDataUrl);
+ assert.strictEqual((await request('/employees/TEST_ADMIN','GET',null,token)).data.employeeInfo.avatarDataUrl,photo.data.avatarDataUrl);
+ const savedProfile=(await db('employees').where({userId}).first()).profile;assert.strictEqual((typeof savedProfile==='string'?JSON.parse(savedProfile):savedProfile).preference,'keep');
+ assert.strictEqual((await request('/me/avatar/remove','POST',{},token)).status,200);
+ assert.strictEqual((await request('/me','GET',null,token)).data.avatarDataUrl,null);
+ console.log('PASS: dashboard/activity self-exclusion, authenticated avatar upload, validation, persistence and removal');
  console.log('PASS: self-exclusion before pagination/search, own-profile allowlist, unread isolation and new notifications');
  console.log('PASS: migration, authenticated APIs, employee CRUD/search, catalogs and masked secrets');
  result=await request('/auth/signup','POST',{firstName:'Sam',lastName:'Rivera',userName:'sam.rivera',email:'sam@example.invalid',password:'Employee-Test-123!'});assert.strictEqual(result.status,200,result.message);
@@ -72,6 +89,19 @@ async function request(url,method='GET',body,token){const response=await fetch('
  assert.strictEqual((await request('/dashboard','GET',null,employeeToken)).status,401);
  assert.strictEqual((await request('/auth/reset','POST',{challenge:recovery.data.challenge,code,password:'Another-Password-123!'})).status,400);
  assert.strictEqual((await request('/auth/login','POST',{adminLoginName:'sam.rivera',adminPassword:'New-Employee-123!'})).status,200);
+
+ const profileChange=await request('/me','PUT',{firstName:'Alex',lastName:'Morgan',userName:'alex.updated',mobile:'+91 9876543210',dateOfBirth:'1990-05-04',address:{addressLine1:'42 Main Street',city:'Chennai',state:'Tamil Nadu',country:'India',postalCode:'600001'},email:'forbidden@example.invalid',roleName:'employee',status:0},token);assert.strictEqual(profileChange.status,200,profileChange.message);assert.strictEqual(profileChange.data.email,'admin@example.invalid');assert.strictEqual(profileChange.data.roleName,'admin');assert.strictEqual(profileChange.data.status,1);assert.strictEqual(profileChange.data.mobile,'+91 9876543210');assert.strictEqual((await db('admin_login').where({empId:'TEST_ADMIN'}).first()).adminLoginName,'alex.updated');
+ assert.strictEqual((await request('/me','PUT',{firstName:'Alex',lastName:'Morgan',userName:'sam.rivera'},token)).status,409);assert.strictEqual((await request('/me','GET',null,token)).data.userName,'alex.updated');
+ assert.strictEqual((await request('/me','PUT',{firstName:'Alex',dateOfBirth:'2999-01-01'},token)).status,400);
+ const otherSession=await request('/auth/login','POST',{adminLoginName:'alex.updated',adminPassword:'Test-Workspace-123!'});assert.strictEqual(otherSession.status,200);
+ assert.strictEqual((await request('/me/password','POST',{currentPassword:'wrong',password:'Changed-Workspace-123!'},token)).status,400);
+ assert.strictEqual((await request('/me/password','POST',{currentPassword:'Test-Workspace-123!',password:'short'},token)).status,400);
+ assert.strictEqual((await request('/me/password','POST',{currentPassword:'Test-Workspace-123!',password:'Test-Workspace-123!'},token)).status,400);
+ const changed=await request('/me/password','POST',{currentPassword:'Test-Workspace-123!',password:'Changed-Workspace-123!'},token);assert.strictEqual(changed.status,200,changed.message);
+ assert.strictEqual((await request('/me','GET',null,otherSession.data.token)).status,401);assert.strictEqual((await request('/me','GET',null,token)).status,200);
+ assert.strictEqual((await request('/auth/login','POST',{adminLoginName:'alex.updated',adminPassword:'Test-Workspace-123!'})).status,401);
+ assert.strictEqual((await request('/auth/login','POST',{adminLoginName:'alex.updated',adminPassword:'Changed-Workspace-123!'})).status,200);
+ console.log('PASS: editable profile, protected email/access, duplicate username rollback, password verification and other-session revocation');
  await request('/auth/logout','POST',{},token);assert.strictEqual((await request('/dashboard','GET',null,token)).status,401);
  console.log('PASS: recovery delivery adapter, invalid code rejection, single-use codes and session revocation');
  // Reset only test rate limits so browser checks can exercise the seeded test accounts.
