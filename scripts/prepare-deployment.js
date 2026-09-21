@@ -9,6 +9,6 @@ const { validate } = require('./check-deployment');
     } finally { await db.destroy(); }
 })().catch(error => {
     // Configuration diagnostics contain variable names only; DB errors may contain credentials.
-    console.error(error.message.startsWith('Deployment configuration invalid:') ? error.message : 'Deployment migration failed (' + (error.code || error.name) + '). Check database availability, mini_hrms schema and migration permissions.');
+    console.error(error.message.startsWith('Deployment configuration invalid:') ? error.message : 'Deployment migration failed (' + (error.code || error.name) + '). Check database availability, railway schema and migration permissions.');
     process.exitCode = 1;
 });

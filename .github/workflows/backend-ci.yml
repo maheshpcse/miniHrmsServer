@@ -44,7 +44,7 @@ jobs:
           docker run --rm
           -e DB_HOST=mysql.railway.internal
           -e DB_PORT=3306
-          -e DB_NAME=mini_hrms
+          -e DB_NAME=railway
           -e DB_USER=ci-user
           -e DB_PASSWORD=ci-placeholder
           -e PORTAL_SECURITY_KEY=ci-placeholder-not-a-live-secret

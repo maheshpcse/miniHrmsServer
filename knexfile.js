@@ -1,9 +1,7 @@
 'use strict';
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
-if (process.env.NODE_ENV === 'development' && process.env.DB_NAME && process.env.DB_NAME !== 'mini_hrms') {
-    throw new Error('Database migrations require DB_NAME=mini_hrms.');
-}
+const { databaseName } = require('./source/configs/database-target');
 module.exports = {
     client: process.env.DB_CLIENT || 'mysql',
     connection: {
@@ -11,7 +9,7 @@ module.exports = {
         port: Number(process.env.DB_PORT || 3306),
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
+        database: databaseName(),
         charset: 'utf8mb4',
         multipleStatements: false
     },

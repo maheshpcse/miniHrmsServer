@@ -1,8 +1,9 @@
 ﻿'use strict';
+const { assertDatabaseTarget } = require('../source/configs/database-target');
 const content=require('../source/portal/learning-content');
 exports.config={transaction:false};
 exports.up=async function(db){
- const [database]=await db.raw('SELECT DATABASE() AS name');if(database[0].name!=='mini_hrms')throw new Error('Portal migrations require mini_hrms.');
+ await assertDatabaseTarget(db);
  const create=async(name,build)=>{if(!(await db.schema.hasTable(name)))await db.schema.createTable(name,build);};
  await create('portal_catalog',t=>{t.increments('id');t.string('kind',32).notNullable();t.string('code',80).notNullable();t.string('name',150).notNullable();t.text('description');t.json('payload');t.boolean('status').notNullable().defaultTo(1);t.integer('createdBy').nullable().references('userId').inTable('employees');t.timestamp('createdAt').defaultTo(db.fn.now());t.timestamp('updatedAt').nullable();t.unique(['kind','code']);});
  await create('portal_requests',t=>{t.increments('id');t.integer('userId').notNullable().references('userId').inTable('employees');t.string('name',150).notNullable();t.string('kind',32).notNullable();t.text('description').notNullable();t.date('startDate').nullable();t.date('endDate').nullable();t.string('status',20).notNullable().defaultTo('pending');t.integer('reviewedBy').nullable().references('userId').inTable('employees');t.timestamp('createdAt').defaultTo(db.fn.now());t.timestamp('updatedAt').nullable();t.index(['userId','status']);});

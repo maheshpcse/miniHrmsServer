@@ -1,4 +1,5 @@
 'use strict';
+const { assertDatabaseTarget } = require('../source/configs/database-target');
 
 const tables = require('../database/schema/tables.json');
 const quote = value => '`' + value.replace(/`/g, '``') + '`';
@@ -7,8 +8,7 @@ const normalizeType = value => value.toLowerCase().replace(/\bint\(\d+\)/g, 'int
 // MySQL DDL commits implicitly. Validate all known tables before the first change.
 exports.config = { transaction: false };
 exports.up = async function (knex) {
-    const [database] = await knex.raw('SELECT DATABASE() AS name');
-    if (database[0].name !== 'mini_hrms') throw new Error('This migration must target mini_hrms.');
+    await assertDatabaseTarget(knex);
     const [columns] = await knex.raw('SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()');
     const [foreignKeys] = await knex.raw(`SELECT k.TABLE_NAME, k.CONSTRAINT_NAME, k.COLUMN_NAME,
         k.REFERENCED_TABLE_NAME, k.REFERENCED_COLUMN_NAME, r.UPDATE_RULE, r.DELETE_RULE

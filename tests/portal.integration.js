@@ -7,13 +7,14 @@ if(!testDir||!path.basename(testDir).startsWith('minihrms-migration-test-'))thro
 const connection={host:'127.0.0.1',port:17360,user:'root',password:'',charset:'utf8mb4'};
 const admin=Knex({client:process.env.DB_CLIENT||'mysql',connection,pool:{min:0,max:1}});let db,server;
 const normal=s=>path.resolve(s).replace(/\\/g,'/').replace(/\/$/,'').toLowerCase();
+const targetDatabase=process.env.NODE_ENV==='production'?'railway':'mini_hrms';
 const secret='test-only-workspace-secret-not-for-production';
 const sent=[];
 async function request(url,method='GET',body,token){const response=await fetch('http://127.0.0.1:17663/api/portal'+url,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},...(body?{body:JSON.stringify(body)}:{})});let data=await response.json();return {status:response.status,...data};}
 (async()=>{
  const [instance]=await admin.raw('SELECT @@datadir AS dir');assert.strictEqual(normal(instance[0].dir),normal(testDir));
- await admin.raw('DROP DATABASE IF EXISTS mini_hrms');await admin.raw('CREATE DATABASE mini_hrms CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci');
- db=Knex({client:process.env.DB_CLIENT||'mysql',connection:{...connection,database:'mini_hrms'},pool:{min:0,max:4},migrations:{directory:path.resolve(__dirname,'../db_migrations')}});
+ await admin.raw('DROP DATABASE IF EXISTS ??',[targetDatabase]);await admin.raw('CREATE DATABASE ?? CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci',[targetDatabase]);
+ db=Knex({client:process.env.DB_CLIENT||'mysql',connection:{...connection,database:targetDatabase},pool:{min:0,max:4},migrations:{directory:path.resolve(__dirname,'../db_migrations')}});
  await db.migrate.latest();assert.deepStrictEqual((await db.migrate.latest())[1],[]);
  const hashed=await bcrypt.hash('Test-Workspace-123!',10);
  const [userId]=await db('employees').insert({empId:'TEST_ADMIN',firstName:'Alex',lastName:'Morgan',userName:'test.admin',email:'admin@example.invalid',roleName:'admin',status:1,createdBy:1});

@@ -1,6 +1,7 @@
 'use strict';
 function validate(env) {
     const errors = [];
+    if (env.NODE_ENV !== 'production') errors.push('NODE_ENV must be production for Railway');
 
     // Database connection variables must be provided individually. A full
     // connection URL (e.g. mysql://user:pass@host:port/db) will break the
@@ -29,7 +30,7 @@ function validate(env) {
         if (!env[name] || !env[name].trim()) errors.push(name + ' is required');
     }
     if (!(env.PORTAL_SECURITY_KEY || env.SECURITY_KEY || '').trim()) errors.push('PORTAL_SECURITY_KEY or SECURITY_KEY is required');
-    if (env.DB_NAME && env.DB_NAME !== 'mini_hrms') errors.push('DB_NAME must be mini_hrms');
+    if (env.DB_NAME && env.DB_NAME !== 'railway') errors.push('DB_NAME must be railway for production');
     if (env.DB_CLIENT !== 'mysql2') errors.push('DB_CLIENT must be mysql2 for Railway');
     for (const name of ['DB_PORT', 'PORT']) {
         if (env[name] !== undefined && (!/^\d+$/.test(env[name]) || Number(env[name]) < 1 || Number(env[name]) > 65535)) errors.push(name + ' must be a valid port number (1-65535)');

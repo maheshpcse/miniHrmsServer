@@ -4,7 +4,7 @@ The backend now has a Knex migration entry point. Use MySQL 8.0 and the backend'
 
 ## Apply
 
-From `miniHrmsServer`, set the existing `.env` connection variables (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`) and `DB_NAME=mini_hrms`. The migration CLI reads this file without loading the API server or its startup jobs. It refuses another database name.
+From `miniHrmsServer`, set the existing `.env` connection variables (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`) and `DB_NAME=mini_hrms`. The migration CLI reads this file without loading the API server or its startup jobs. Local development uses `mini_hrms`. In production set `NODE_ENV=production` and `DB_NAME=railway`; the same migrations target `railway`. Migrations verify the active connection matches the environment before changing tables.
 
 For a new installation, first create the database using a MySQL client:
 
@@ -29,7 +29,7 @@ The existing `mysql` driver requires an authentication method it supports; this 
 - `../db_migrations/202609190001_reconcile_mini_hrms_tables.js`: creates missing tables and reconciles the three supplied schema variants, preserving rows.
 - `../db_migrations/202609190002_install_missing_mini_hrms_routines.js`: installs the missing function and procedures required by the API. Existing routines are retained, including custom versions.
 - `schema/tables.json` and `schema/routines.json`: reviewed definitions loaded by the versioned migrations. Treat these baseline assets as immutable after deployment; use new migrations for future changes.
-- `schema/mini_hrms.sql` and `schema/mini_hrms.routines.sql`: readable final SQL for an empty database. They are alternatives for manual installation, not upgrade scripts. The routine file requires a client supporting `DELIMITER`.
+- `schema/mini_hrms.sql` and `schema/mini_hrms.routines.sql`: readable final SQL for an empty database. These SQL exports explicitly target local `mini_hrms`; use the Knex migrations for production `railway`. They are alternatives for manual installation, not upgrade scripts. The routine file requires a client supporting `DELIMITER`.
 - `ANALYSIS.md`: source comparison, selected schema, corrections, and limits.
 - `DATA_DICTIONARY.md`: all 142 columns plus primary, unique, secondary, and foreign keys.
 
@@ -49,7 +49,7 @@ The routine migration does not replace an installed routine. Consequently, corre
 
 `tests/migrations.integration.js` tests a new schema, all 14 routine calls, API result shape, repeated attendance, non-destructive admin initialization, idempotency, upgrades from all three actual source DDLs with synthetic rows, preservation of existing procedures, and preflight rejection of schema drift/orphans.
 
-It only connects to `127.0.0.1:17360`, checks the server's `@@datadir` against `MINI_HRMS_TEST_DATADIR`, and requires a directory whose name starts with `minihrms-migration-test-`. It drops/recreates `mini_hrms` only in that isolated instance. Never point the test at an application instance.
+It only connects to `127.0.0.1:17360`, checks the server's `@@datadir` against `MINI_HRMS_TEST_DATADIR`, and requires a directory whose name starts with `minihrms-migration-test-`. The schema test drops/recreates `mini_hrms` only in that isolated instance. The portal integration test uses `mini_hrms` locally and `railway` with `NODE_ENV=production`, with the same isolated-instance safeguard. Never point the test at an application instance.
 
 After starting an isolated MySQL 8.0 instance with an empty temporary data directory and a test-only root account compatible with the installed driver:
 
@@ -60,3 +60,6 @@ npm.cmd run db:test
 ```
 
 `MINI_HRMS_SOURCE_DIR` enables the three source-file upgrade cases; omit it to run the standalone synthetic tests. Shut down the isolated instance after testing.
+
+
+Environment-target validation: all migrations and portal integration checks passed against both `mini_hrms` (development) and `railway` (production) in an isolated MySQL 8 instance. Ten deployment/configuration tests passed. No live database was renamed, copied or migrated as part of this configuration update.
