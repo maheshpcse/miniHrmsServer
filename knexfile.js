@@ -1,7 +1,7 @@
 'use strict';
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
-if (process.env.DB_NAME && process.env.DB_NAME !== 'mini_hrms') {
+if (process.env.NODE_ENV === 'development' && process.env.DB_NAME && process.env.DB_NAME !== 'mini_hrms') {
     throw new Error('Database migrations require DB_NAME=mini_hrms.');
 }
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
         port: Number(process.env.DB_PORT || 3306),
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
-        database: 'mini_hrms',
+        database: process.env.DB_NAME,
         charset: 'utf8mb4',
         multipleStatements: false
     },
