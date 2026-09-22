@@ -1,0 +1,32 @@
+﻿# HR module implementation: staged validation
+
+22 September 2026. Source requirements: hrms_core_modules_architecture.md and hrms_payroll_database_architecture.md supplied by the user. Selected payroll mode: controlled import of finalized results, not local calculation.
+
+The staged migration adds explicit tables for employment assignments, shared workflow/audit, holidays, punch events/summaries/corrections/overtime/period locks, leave balances/ledger/requests, encrypted document versions/acknowledgements, recipient-scoped notices, events/RSVP/checklists, privacy-threshold surveys/recognition/feedback, exit/clearance, finalized payroll results/components/tax/publication and salary queries. Existing employees remain the identity source; existing local/production target guards remain. New permission grants are limited to existing HR (hr:manage) and finance (payroll:manage) roles; admin retains administration. Custom roles are unchanged.
+
+Validation so far: staged source and migrations run in a UI tmp snapshot against disposable MySQL 127.0.0.1:17360 only, with datadir verification. Existing portal regression tests passed. New cases passed role-scoped hierarchy/cycle rejection, module reads, punch transitions/idempotency, leave reserve/review/reverse, own/unauthorized review rejection, targeted notices, concurrent RSVP capacity, anonymous-response threshold, exact-decimal payroll reconciliation/idempotency/publication/employee ownership, exit approval/clearance gating. Angular production compilation passed (existing HammerJS optimization warning).
+
+Backend installation completed using hash guards and backups, preserving earlier password-change edits. Local mini_hrms was backed up under the ignored UI tmp directory and migrated successfully; production was not changed. Test fixtures were dropped/recreated only in the isolated instance. No commits or pushes.
+
+Boundaries requiring explicit follow-up rather than pretending they exist: external malware scanner/object-storage provider; country-specific payroll calculation/tax filing (outside selected import mode); multiple organizations/tenants; advanced shift rotation/accrual/partial-day policies; configurable multi-stage approvals and delegated reviewers; notification retry/background scheduling; birthday privacy preferences and automation; financial reversals/off-cycle imports. Current baseline uses one organization and one review step, UTC persisted timestamps and organization timezone for punches, whole working-day leave excluding configured weekly offs/holidays, protected encrypted DB file storage, polling notifications, manual final exit closure and regular finalized monthly imports. These limits must be visible in handoff and UI copy where they affect decisions.
+
+
+## Routes and rollout
+
+Organization: /admin/organization. Module pages: /admin/hr/people, attendance, leave, documents, messages, events, engagement, exit, salary, approvals, policies and audit. Each uses the shared shell, custom selects, feedback, text cursors, padded link hover and collapsed-sidebar-only right tooltips. The hierarchy shows the full organization to HR/admin/executive roles and the permitted reporting network to other roles. API access remains authoritative.
+
+Restart the backend after source changes; sign in again to refresh newly granted role permissions. Production deployment applies db_migrations/202609220001_hr_core_modules.js through the existing Railway pre-deploy migration hook; this session did not publish or deploy. The existing database target guard selects mini_hrms locally and railway in production. Driver/session timezone is now explicitly UTC for new writes; legacy datetime values are not rewritten and their historical timezone conventions should be retained in any data-conversion plan.
+
+## Finalized payroll import contract
+
+POST /api/portal/core/salary/import requires payroll:manage (or administrator) and status FINALIZED. Supply employee_id, external_reference, source_system, period (YYYY-MM), currency, input_snapshot, decimal-string totals gross/deductions/tax/reimbursements/employer_contributions/net, and component lines with code/name/type/amount/explanation. Monetary storage uses DECIMAL(19,4); reconciliation uses scaled BigInt, not floating point. A repeated identical external reference returns the existing result; conflicting content is rejected. A second regular result for the same employee/month is rejected. The importer reconciles supplied finalized totals and never calculates statutory liability.
+
+Publication is a separate POST /salary/:id/publish action. Unpublished results stay hidden from employees. Employees can view/print their own published breakdown and submit a query tied to that result. Notifications contain no amounts. Historical results have no edit/delete API. Adjustments, reversals and off-cycle payroll are explicitly outside this import baseline; do not bypass the duplicate guard to simulate them.
+
+## Validation evidence
+
+Existing and new backend integration suites passed against guarded disposable MySQL. Policy tests include invalid timezones, unauthorized configuration, changed weekly-off calculation and minimum notice enforcement. Multipart document tests passed encrypted round-trip, ownership denial and acknowledgement. Browser checks passed all module tabs/forms, real API responses, hierarchy expand/collapse and 390/768/1440px overflow checks. Production Angular build passed with the existing nonfatal HammerJS warning. No production credentials or personnel records were used as test fixtures.
+
+Final browser validation also passed employee/manager/finance hierarchy scoping and import-control visibility on mobile. A real employee leave form submission passed through the custom dropdown, authenticated API, persisted request/approval workflow and success dialog. The shared select now tracks option identity to prevent regenerated option objects from replacing hovered options during change detection. Final template compilation passed after the last action-visibility refinements.
+
+Protected document blobs use AES-256-GCM with a key derived from the configured portal secret. Back up that key with protected data: rotating it requires re-encrypting existing documents. No malware scanning or external object-storage service is claimed by this baseline. Uploaded documents are served only through an authorized attachment endpoint with no-store and nosniff headers.

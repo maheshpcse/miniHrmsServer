@@ -14,7 +14,8 @@
     "start:prod": "node index.js",
     "deploy:check": "node scripts/check-deployment.js",
     "deploy:prepare": "node scripts/prepare-deployment.js",
-    "test:deployment": "node --test tests/deployment-config.test.js"
+    "test:deployment": "node --test tests/deployment-config.test.js",
+    "notifications:deliver": "node scripts/deliver-notifications.js"
   },
   "keywords": [
     "MiNiHRMSServer"

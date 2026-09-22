@@ -5,6 +5,7 @@ const { databaseName } = require('./source/configs/database-target');
 module.exports = {
     client: process.env.DB_CLIENT || 'mysql',
     connection: {
+        timezone: 'Z',
         host: process.env.DB_HOST || '127.0.0.1',
         port: Number(process.env.DB_PORT || 3306),
         user: process.env.DB_USER,
@@ -13,7 +14,7 @@ module.exports = {
         charset: 'utf8mb4',
         multipleStatements: false
     },
-    pool: { min: 0, max: 2 },
+    pool: { min: 0, max: 2, afterCreate: (connection, done) => connection.query("SET time_zone = '+00:00'", error => done(error, connection)) },
     migrations: {
         directory: path.join(__dirname, 'db_migrations'),
         tableName: 'knex_migrations',

@@ -4,7 +4,7 @@ const Knex=require('knex'),express=require('express'),bcrypt=require('bcrypt');
 const createPortal=require('../source/portal/router');
 const testDir=process.env.MINI_HRMS_TEST_DATADIR;
 if(!testDir||!path.basename(testDir).startsWith('minihrms-migration-test-'))throw new Error('Use an isolated migration-test datadir.');
-const connection={host:'127.0.0.1',port:17360,user:'root',password:'',charset:'utf8mb4'};
+const connection={host:'127.0.0.1',port:17360,user:'root',password:'',charset:'utf8mb4',timezone:'Z'};
 const admin=Knex({client:process.env.DB_CLIENT||'mysql',connection,pool:{min:0,max:1}});let db,server;
 const normal=s=>path.resolve(s).replace(/\\/g,'/').replace(/\/$/,'').toLowerCase();
 const targetDatabase=process.env.NODE_ENV==='production'?'railway':'mini_hrms';
@@ -14,7 +14,7 @@ async function request(url,method='GET',body,token){const response=await fetch('
 (async()=>{
  const [instance]=await admin.raw('SELECT @@datadir AS dir');assert.strictEqual(normal(instance[0].dir),normal(testDir));
  await admin.raw('DROP DATABASE IF EXISTS ??',[targetDatabase]);await admin.raw('CREATE DATABASE ?? CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci',[targetDatabase]);
- db=Knex({client:process.env.DB_CLIENT||'mysql',connection:{...connection,database:targetDatabase},pool:{min:0,max:4},migrations:{directory:path.resolve(__dirname,'../db_migrations')}});
+ db=Knex({client:process.env.DB_CLIENT||'mysql',connection:{...connection,database:targetDatabase},pool:{min:0,max:4,afterCreate:(c,done)=>c.query("SET time_zone = '+00:00'",e=>done(e,c))},migrations:{directory:path.resolve(__dirname,'../db_migrations')}});
  await db.migrate.latest();assert.deepStrictEqual((await db.migrate.latest())[1],[]);
  const hashed=await bcrypt.hash('Test-Workspace-123!',10);
  const [userId]=await db('employees').insert({empId:'TEST_ADMIN',firstName:'Alex',lastName:'Morgan',userName:'test.admin',email:'admin@example.invalid',roleName:'admin',status:1,createdBy:1});
@@ -94,14 +94,16 @@ async function request(url,method='GET',body,token){const response=await fetch('
  assert.strictEqual((await request('/me','PUT',{firstName:'Alex',lastName:'Morgan',userName:'sam.rivera'},token)).status,409);assert.strictEqual((await request('/me','GET',null,token)).data.userName,'alex.updated');
  assert.strictEqual((await request('/me','PUT',{firstName:'Alex',dateOfBirth:'2999-01-01'},token)).status,400);
  const otherSession=await request('/auth/login','POST',{adminLoginName:'alex.updated',adminPassword:'Test-Workspace-123!'});assert.strictEqual(otherSession.status,200);
- assert.strictEqual((await request('/me/password','POST',{currentPassword:'wrong',password:'Changed-Workspace-123!'},token)).status,400);
- assert.strictEqual((await request('/me/password','POST',{currentPassword:'Test-Workspace-123!',password:'short'},token)).status,400);
- assert.strictEqual((await request('/me/password','POST',{currentPassword:'Test-Workspace-123!',password:'Test-Workspace-123!'},token)).status,400);
- const changed=await request('/me/password','POST',{currentPassword:'Test-Workspace-123!',password:'Changed-Workspace-123!'},token);assert.strictEqual(changed.status,200,changed.message);
+ assert.strictEqual((await request('/me/password','POST',{password:'Changed-Workspace-123!'})).status,401);
+ assert.strictEqual((await request('/me/password','POST',{password:'short'},token)).status,400);
+ assert.strictEqual((await request('/me/password','POST',{password:'Test-Workspace-123!'},token)).status,400);
+ const changed=await request('/me/password','POST',{password:'Changed-Workspace-123!'},token);assert.strictEqual(changed.status,200,changed.message);
  assert.strictEqual((await request('/me','GET',null,otherSession.data.token)).status,401);assert.strictEqual((await request('/me','GET',null,token)).status,200);
  assert.strictEqual((await request('/auth/login','POST',{adminLoginName:'alex.updated',adminPassword:'Test-Workspace-123!'})).status,401);
  assert.strictEqual((await request('/auth/login','POST',{adminLoginName:'alex.updated',adminPassword:'Changed-Workspace-123!'})).status,200);
- console.log('PASS: editable profile, protected email/access, duplicate username rollback, password verification and other-session revocation');
+ console.log('PASS: editable profile, protected email/access, duplicate username rollback, session-authenticated password change without current password and other-session revocation');
+ await require('./core.integration')({db,request,token,userId});
+ await require('./module-revision.integration')({db,request,token,userId});
  await request('/auth/logout','POST',{},token);assert.strictEqual((await request('/dashboard','GET',null,token)).status,401);
  console.log('PASS: recovery delivery adapter, invalid code rejection, single-use codes and session revocation');
  // Reset only test rate limits so browser checks can exercise the seeded test accounts.

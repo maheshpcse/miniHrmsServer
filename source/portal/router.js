@@ -16,7 +16,7 @@ module.exports=function createPortal({db,secret,mailer}){
  const asyncRoute=fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next);
  const ok=(res,data,message='Success')=>res.json({success:true,data,message});
  const hash=value=>crypto.createHmac('sha256',secret).update(value).digest('hex');
- const permissionCodes=['employees:read','employees:write','settings:write','requests:review','notifications:write'];
+ const permissionCodes=['hr:manage','payroll:manage','employees:read','employees:write','settings:write','requests:review','notifications:write'];
  const permitted=(req,permission)=>req.user.roleName==='admin'||req.permissions.includes(permission);
  const requirePermission=(req,permission)=>{if(!permitted(req,permission))fail(403,'You do not have permission to perform this action.');};
  async function permissions(role){if(role==='admin')return permissionCodes;const record=await db('portal_catalog').where({kind:'roles',code:role,status:1}).first();return record?String(parse(record.payload).permissions||'').split(',').map(p=>p.trim()).filter(p=>permissionCodes.includes(p)):[];}
@@ -71,6 +71,7 @@ module.exports=function createPortal({db,secret,mailer}){
  });
  router.post('/auth/login',login);router.post('/auth/signup',signup);router.post('/auth/forgot',forgot);router.post('/auth/reset',reset);
  router.use(authenticate);
+ router.use('/core',require('./core-router')({db,secret}));
  const logout=asyncRoute(async(req,res)=>{await db.transaction(async trx=>{await trx('portal_sessions').where({id:req.session.id}).update({revokedAt:trx.fn.now()});if(req.session.auditId)await trx('audit_employee_admin_login').where({auditEmpAdminLoginId:req.session.auditId}).update({lastLogoutTime:trx.fn.now(),sessionTime:trx.raw('SEC_TO_TIME(GREATEST(0,TIMESTAMPDIFF(SECOND,lastLoginTime,NOW())))')});const active=await trx('portal_sessions').where({userId:req.user.userId,loginKind:req.session.loginKind}).whereNull('revokedAt').where('expiresAt','>',new Date()).first();if(!active)await trx(req.session.loginKind==='admin'?'admin_login':'employee_login').where({empId:req.user.empId}).update({loginStatus:0});});ok(res,{signedOut:true});});router.post('/auth/logout',logout);
  router.get('/dashboard',asyncRoute(async(req,res)=>{
   const team=permitted(req,'employees:read');const peopleQuery=db('employees').whereNot('userId',req.user.userId);if(!team)peopleQuery.where({userId:req.user.userId});
@@ -81,7 +82,7 @@ module.exports=function createPortal({db,secret,mailer}){
  const visibleNotifications=req=>db('portal_notifications').where(function(){this.where('recipientId',req.user.userId).orWhere(function(){this.whereNull('recipientId').whereIn('audience',req.user.roleName==='admin'?['all','admin']:['all']);});});
  router.get('/notifications/unread',asyncRoute(async(req,res)=>{const preference=await db('portal_user_preferences').where({userId:req.user.userId}).first();const [result]=await visibleNotifications(req).where('id','>',preference?preference.notificationsReadThrough:0).count('* as count');ok(res,{count:Number(result.count)});}));
  router.post('/notifications/read',asyncRoute(async(req,res)=>{const [result]=await visibleNotifications(req).max('id as lastId');const lastId=Number(result.lastId)||0;await db.raw('INSERT INTO portal_user_preferences (userId,notificationsReadThrough) VALUES (?,?) ON DUPLICATE KEY UPDATE notificationsReadThrough=GREATEST(notificationsReadThrough,VALUES(notificationsReadThrough))',[req.user.userId,lastId]);ok(res,{read:true});}));
- function personalDetails(user){const profile=parse(user.profile),address=parse(user.address);return {userId:user.userId,empId:user.empId,firstName:user.firstName,lastName:user.lastName,userName:user.userName,email:user.email,roleName:user.roleName,status:user.status,avatarDataUrl:profile.avatarDataUrl||null,mobile:profile.mobile||profile.Mobile||'',dateOfBirth:profile.dateOfBirth||profile.DateOfBirth||'',address:{addressLine1:address.addressLine1||address.Address||'',city:address.city||address.City||'',state:address.state||address.State||'',country:address.country||address.Country||'',postalCode:address.postalCode||address.Pincode||''}};}
+ function personalDetails(user){const profile=parse(user.profile),address=parse(user.address);return {userId:user.userId,empId:user.empId,firstName:user.firstName,lastName:user.lastName,userName:user.userName,email:user.email,roleName:user.roleName,status:user.status,avatarDataUrl:profile.avatarDataUrl||null,mobile:profile.mobile||profile.Mobile||'',deliveryPreferences:profile.deliveryPreferences||{email:false,sms:false},dateOfBirth:profile.dateOfBirth||profile.DateOfBirth||'',address:{addressLine1:address.addressLine1||address.Address||'',city:address.city||address.City||'',state:address.state||address.State||'',country:address.country||address.Country||'',postalCode:address.postalCode||address.Pincode||''}};}
  router.get('/me',asyncRoute(async(req,res)=>ok(res,personalDetails(req.user))));
 
  const avatarUpload=require('multer')({storage:require('multer').memoryStorage(),limits:{fileSize:5*1024*1024,files:1,fields:0}}).single('avatar');
@@ -100,6 +101,7 @@ module.exports=function createPortal({db,secret,mailer}){
   if(req.body.userName!==undefined){data.userName=text(req.body.userName,'Username',50);if(!/^[a-zA-Z0-9._-]+$/.test(data.userName))fail(400,'Username can contain letters, numbers, dots, underscores and hyphens.');}
   let result;await db.transaction(async trx=>{const user=await trx('employees').where({userId:req.user.userId}).forUpdate().first();const profile=parse(user.profile);
     if(req.body.mobile!==undefined){delete profile.Mobile;profile.mobile=text(req.body.mobile,'Mobile number',30,false);if(profile.mobile&&!/^[+0-9() .-]{5,30}$/.test(profile.mobile))fail(400,'Enter a valid mobile number.');}
+    if(req.body.deliveryPreferences!==undefined){const prefs=req.body.deliveryPreferences;if(!prefs||typeof prefs.email!=='boolean'||typeof prefs.sms!=='boolean')fail(400,'Choose valid notification preferences.');if(prefs.sms&&!/^\+[1-9]\d{7,14}$/.test(profile.mobile||''))fail(400,'SMS requires a mobile number with country code, for example +919876543210.');profile.deliveryPreferences={email:prefs.email,sms:prefs.sms};}
     if(req.body.dateOfBirth!==undefined){delete profile.DateOfBirth;profile.dateOfBirth=date(req.body.dateOfBirth,'Date of birth');if(profile.dateOfBirth&&profile.dateOfBirth>new Date().toISOString().slice(0,10))fail(400,'Date of birth cannot be in the future.');}
     if(req.body.address!==undefined){if(!req.body.address||typeof req.body.address!=='object'||Array.isArray(req.body.address))fail(400,'Enter a valid address.');const address=parse(user.address);for(const [key,label,max] of [['addressLine1','Street address',250],['city','City',100],['state','State',100],['country','Country',100],['postalCode','Postal code',20]])address[key]=text(req.body.address[key],label,max,false);for(const alias of ['Address','City','State','Country','Pincode'])delete address[alias];data.address=JSON.stringify(address);}
     data.profile=JSON.stringify(profile);await trx('employees').where({userId:user.userId}).update(data);
@@ -108,14 +110,13 @@ module.exports=function createPortal({db,secret,mailer}){
   });ok(res,result,'Profile updated.');
  }));
  router.post('/me/password',asyncRoute(async(req,res)=>{
-  await throttle(req,'change-password',10);const current=req.body.currentPassword;
-  if(typeof current!=='string'||!current||Buffer.byteLength(current)>1024)fail(400,'Enter your current password.');
+  await throttle(req,'change-password',10);
   const nextPassword=password(req.body.password);const encrypted=await bcrypt.hash(nextPassword,12);
   await db.transaction(async trx=>{
     await trx('employees').where({userId:req.user.userId}).forUpdate().first();
     const table=req.session.loginKind==='admin'?'admin_login':'employee_login';const credential=await trx(table).where({empId:req.user.empId}).forUpdate().first();
     const stored=credential&&(table==='admin_login'?credential.adminPassword:credential.empPassword);
-    if(!stored||!(await bcrypt.compare(current,stored)))fail(400,'Your current password is incorrect.');
+    if(!stored)fail(400,'Password changes are not available for this account.');
     if(await bcrypt.compare(nextPassword,stored))fail(400,'Choose a password different from your current password.');
     await trx('employee_login').where({empId:req.user.empId}).update({empPassword:encrypted,passwordUpdatedOn:trx.fn.now(),passwordExpiryDate:null});
     const admin=await trx('admin_login').where({empId:req.user.empId}).first();if(admin){const info=parse(admin.passwordsInfo);info.LoginPasswordUpdatedOn=new Date().toISOString();info.LoginPasswordExpiryDate=new Date(Date.now()+90*86400000).toISOString();await trx('admin_login').where({empId:req.user.empId}).update({adminPassword:encrypted,passwordsInfo:JSON.stringify(info)});}
