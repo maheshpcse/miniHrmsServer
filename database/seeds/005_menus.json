@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "description": "Stable menu metadata. API permissions remain authoritative; no duplicate sidebar shortcuts are inserted.",
+  "categories": [
+    {
+      "code": "MENU",
+      "name": "Module menus",
+      "values": [
+        {
+          "state": "active",
+          "config": {
+            "path": "/admin/hr/people",
+            "permission": "hr:manage",
+            "scope": "server_enforced"
+          },
+          "code": "PEOPLE",
+          "name": "Employee Management"
+        },
+        {
+          "state": "active",
+          "config": {
+            "path": "/admin/hr/attendance",
+            "permission": null,
+            "scope": "server_enforced"
+          },
+          "code": "ATTENDANCE",
+          "name": "Attendance"
+        },
+        {
+          "state": "active",
+          "config": {
+            "path": "/admin/hr/leave",
+            "permission": null,
+            "scope": "server_enforced"
+          },
+          "code": "LEAVE",
+          "name": "Leave"
+        },
+        {
+          "state": "active",
+          "config": {
+            "path": "/admin/hr/documents",
+            "permission": null,
+            "scope": "server_enforced"
+          },
+          "code": "DOCUMENTS",
+          "name": "Document Center"
+        },
+        {
+          "state": "active",
+          "config": {
+            "path": "/admin/hr/messages",
+            "permission": null,
+            "scope": "server_enforced"
+          },
+          "code": "NOTICES",
+          "name": "Notice & Messages"
+        },
+        {
+          "state": "active",
+          "config": {
+            "path": "/admin/hr/engagement",
+            "permission": null,
+            "scope": "server_enforced"
+          },
+          "code": "ENGAGEMENT",
+          "name": "Employee Engagement"
+        },
+        {
+          "state": "active",
+          "config": {
+            "path": "/admin/hr/events",
+            "permission": null,
+            "scope": "server_enforced"
+          },
+          "code": "EVENTS",
+          "name": "Events & Celebrations"
+        },
+        {
+          "state": "active",
+          "config": {
+            "path": "/admin/hr/exit",
+            "permission": null,
+            "scope": "server_enforced"
+          },
+          "code": "EXIT",
+          "name": "Exit & Resignation"
+        },
+        {
+          "state": "active",
+          "config": {
+            "path": "/admin/hr/salary",
+            "permission": null,
+            "scope": "server_enforced"
+          },
+          "code": "SALARY",
+          "name": "Salary & Payslips"
+        },
+        {
+          "state": "active",
+          "config": {
+            "path": "/admin/payroll",
+            "permission": "payroll:manage",
+            "scope": "server_enforced"
+          },
+          "code": "PAYROLL",
+          "name": "Payroll administration"
+        }
+      ]
+    }
+  ],
+  "catalog": []
+}

@@ -15,5 +15,9 @@ module.exports = (dependencies) => {
   require('./modules/engagement/routes')(platform);
   require('./modules/exit/routes')(platform);
   require('./modules/audit/routes')(platform);
+  require('./modules/chat/routes')(platform);
+  require('./modules/push/routes')(platform);
+  require('./modules/payroll/calculation-routes')(platform);
+  require('./modules/masters/routes')(platform);
   return platform.r;
 };

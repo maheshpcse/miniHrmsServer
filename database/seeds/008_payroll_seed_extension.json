@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "description": "Payroll lookup templates only. No statutory rates, currency conversion or active tax policies.",
+  "categories": [
+    {
+      "code": "COUNTRY",
+      "name": "Country starter catalog",
+      "values": [
+        {
+          "state": "active",
+          "config": {},
+          "code": "US",
+          "name": "United States"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "GB",
+          "name": "United Kingdom"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "IN",
+          "name": "India"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "SG",
+          "name": "Singapore"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "JP",
+          "name": "Japan"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "AE",
+          "name": "United Arab Emirates"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "MY",
+          "name": "Malaysia"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "PH",
+          "name": "Philippines"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "CN",
+          "name": "China"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "KR",
+          "name": "South Korea"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "ID",
+          "name": "Indonesia"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "TH",
+          "name": "Thailand"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "VN",
+          "name": "Vietnam"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "BD",
+          "name": "Bangladesh"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "PK",
+          "name": "Pakistan"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "LK",
+          "name": "Sri Lanka"
+        },
+        {
+          "state": "active",
+          "config": {},
+          "code": "NP",
+          "name": "Nepal"
+        }
+      ]
+    },
+    {
+      "code": "CURRENCY",
+      "name": "Payroll currency starter catalog",
+      "values": [
+        {
+          "state": "active",
+          "config": {
+            "decimal_places": 2
+          },
+          "code": "USD",
+          "name": "US Dollar"
+        },
+        {
+          "state": "active",
+          "config": {
+            "decimal_places": 2
+          },
+          "code": "GBP",
+          "name": "Pound Sterling"
+        },
+        {
+          "state": "active",
+          "config": {
+            "decimal_places": 2
+          },
+          "code": "INR",
+          "name": "Indian Rupee"
+        },
+        {
+          "state": "active",
+          "config": {
+            "decimal_places": 2
+          },
+          "code": "SGD",
+          "name": "Singapore Dollar"
+        },
+        {
+          "state": "active",
+          "config": {
+            "decimal_places": 0
+          },
+          "code": "JPY",
+          "name": "Japanese Yen"
+        },
+        {
+          "state": "active",
+          "config": {
+            "decimal_places": 2
+          },
+          "code": "AED",
+          "name": "UAE Dirham"
+        },
+        {
+          "state": "active",
+          "config": {
+            "decimal_places": 2
+          },
+          "code": "MYR",
+          "name": "Malaysian Ringgit"
+        },
+        {
+          "state": "active",
+          "config": {
+            "decimal_places": 2
+          },
+          "code": "PHP",
+          "name": "Philippine Peso"
+        }
+      ]
+    },
+    {
+      "code": "PAYROLL_COMPONENT_TYPE",
+      "name": "Payroll component types",
+      "values": [
+        {
+          "code": "EARNING",
+          "name": "Earning",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "DEDUCTION",
+          "name": "Deduction",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "REIMBURSEMENT",
+          "name": "Reimbursement",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EMPLOYER_CONTRIBUTION",
+          "name": "Employer Contribution",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "PAYROLL_ROUNDING",
+      "name": "Rounding modes",
+      "values": [
+        {
+          "state": "active",
+          "config": {
+            "implemented": true,
+            "currency_decimals_configurable": true
+          },
+          "code": "HALF_UP",
+          "name": "Half up"
+        }
+      ]
+    },
+    {
+      "code": "TAX_JURISDICTION",
+      "name": "Jurisdiction setup templates",
+      "values": [
+        {
+          "state": "template",
+          "config": {
+            "required_fields": [
+              "country",
+              "region",
+              "tax_year",
+              "effective_from",
+              "effective_to",
+              "source_reference"
+            ],
+            "rates": [],
+            "requires_professional_review": true
+          },
+          "code": "COUNTRY_REGION_YEAR",
+          "name": "Country, region and tax year"
+        }
+      ]
+    }
+  ],
+  "catalog": []
+}

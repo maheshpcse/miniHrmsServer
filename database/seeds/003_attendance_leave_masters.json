@@ -1,0 +1,344 @@
+{
+  "version": 1,
+  "description": "Conservative attendance templates and leave types without entitlement amounts.",
+  "categories": [
+    {
+      "code": "PUNCH_SOURCE",
+      "name": "PUNCH SOURCE",
+      "values": [
+        {
+          "code": "WEB",
+          "name": "Web",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "MOBILE",
+          "name": "Mobile",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "BIOMETRIC",
+          "name": "Biometric",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "IMPORT",
+          "name": "Import",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "ATTENDANCE_STATUS",
+      "name": "ATTENDANCE STATUS",
+      "values": [
+        {
+          "code": "PRESENT",
+          "name": "Present",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "ABSENT",
+          "name": "Absent",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "PARTIAL",
+          "name": "Partial",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "HOLIDAY",
+          "name": "Holiday",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "WEEKEND",
+          "name": "Weekend",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "ON_LEAVE",
+          "name": "On Leave",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "MISSING_PUNCH",
+          "name": "Missing Punch",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "REGULARIZATION_REASON",
+      "name": "REGULARIZATION REASON",
+      "values": [
+        {
+          "code": "MISSED_PUNCH",
+          "name": "Missed Punch",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "DEVICE_FAILURE",
+          "name": "Device Failure",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "OFFICIAL_DUTY",
+          "name": "Official Duty",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "TIME_CORRECTION",
+          "name": "Time Correction",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "WORK_WEEK",
+      "name": "WORK WEEK",
+      "values": [
+        {
+          "code": "MON_FRI",
+          "name": "Mon Fri",
+          "state": "template",
+          "config": {}
+        },
+        {
+          "code": "MON_SAT",
+          "name": "Mon Sat",
+          "state": "template",
+          "config": {}
+        },
+        {
+          "code": "CUSTOM",
+          "name": "Custom",
+          "state": "template",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "LEAVE_LEDGER_TYPE",
+      "name": "LEAVE LEDGER TYPE",
+      "values": [
+        {
+          "code": "OPENING",
+          "name": "Opening",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "ACCRUAL",
+          "name": "Accrual",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "ADJUSTMENT",
+          "name": "Adjustment",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "REVERSAL",
+          "name": "Reversal",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "USED",
+          "name": "Used",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EXPIRED",
+          "name": "Expired",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "ENCASHMENT",
+          "name": "Encashment",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "ATTENDANCE_POLICY",
+      "name": "Attendance policy templates",
+      "values": [
+        {
+          "state": "template",
+          "config": {
+            "web_punch": true,
+            "mobile_punch": true,
+            "immutable_punches": true,
+            "regularization_window_days": 7,
+            "regularization_approval": "MANAGER",
+            "overtime_approval": "MANAGER",
+            "geo_fence": false,
+            "selfie": false,
+            "requires_shift_thresholds": true
+          },
+          "code": "STANDARD",
+          "name": "Standard attendance template"
+        }
+      ]
+    },
+    {
+      "code": "SHIFT",
+      "name": "Shift templates",
+      "values": [
+        {
+          "state": "template",
+          "config": {
+            "requires_start_end_timezone": true
+          },
+          "code": "DAY_SHIFT",
+          "name": "Day shift"
+        }
+      ]
+    },
+    {
+      "code": "OVERTIME_POLICY",
+      "name": "Overtime templates",
+      "values": [
+        {
+          "state": "template",
+          "config": {
+            "approval": "MANAGER",
+            "requires_threshold_configuration": true
+          },
+          "code": "APPROVAL_REQUIRED",
+          "name": "Approved overtime only"
+        }
+      ]
+    },
+    {
+      "code": "LEAVE_TYPE",
+      "name": "Leave templates",
+      "values": [
+        {
+          "state": "template",
+          "config": {
+            "payroll_treatment": "PAID",
+            "entitlement": null,
+            "requires_tenant_review": true
+          },
+          "code": "ANNUAL",
+          "name": "Annual / earned leave"
+        },
+        {
+          "state": "template",
+          "config": {
+            "payroll_treatment": "PAID",
+            "entitlement": null,
+            "requires_tenant_review": true
+          },
+          "code": "CASUAL",
+          "name": "Casual leave"
+        },
+        {
+          "state": "template",
+          "config": {
+            "payroll_treatment": "PAID",
+            "entitlement": null,
+            "requires_tenant_review": true
+          },
+          "code": "SICK",
+          "name": "Sick leave"
+        },
+        {
+          "state": "template",
+          "config": {
+            "payroll_treatment": "UNPAID",
+            "entitlement": null,
+            "requires_tenant_review": true
+          },
+          "code": "UNPAID",
+          "name": "Unpaid leave"
+        },
+        {
+          "state": "template",
+          "config": {
+            "payroll_treatment": "PAID",
+            "entitlement": null,
+            "requires_tenant_review": true
+          },
+          "code": "COMP_OFF",
+          "name": "Compensatory time off"
+        },
+        {
+          "state": "template",
+          "config": {
+            "payroll_treatment": "INFORMATIONAL",
+            "entitlement": null,
+            "requires_tenant_review": true
+          },
+          "code": "MATERNITY",
+          "name": "Maternity leave"
+        },
+        {
+          "state": "template",
+          "config": {
+            "payroll_treatment": "INFORMATIONAL",
+            "entitlement": null,
+            "requires_tenant_review": true
+          },
+          "code": "PATERNITY",
+          "name": "Paternity leave"
+        }
+      ]
+    },
+    {
+      "code": "LEAVE_POLICY",
+      "name": "Leave policy templates",
+      "values": [
+        {
+          "state": "template",
+          "config": {
+            "requires_type_mapping": true,
+            "requires_entitlements": true
+          },
+          "code": "TENANT_DEFINED",
+          "name": "Tenant-defined leave policy"
+        }
+      ]
+    },
+    {
+      "code": "HOLIDAY_CALENDAR",
+      "name": "Holiday calendar templates",
+      "values": [
+        {
+          "state": "template",
+          "config": {
+            "requires_year_and_location": true,
+            "days": []
+          },
+          "code": "LOCATION_CALENDAR",
+          "name": "Location holiday calendar"
+        }
+      ]
+    }
+  ],
+  "catalog": []
+}

@@ -2,7 +2,7 @@
 const profileOf = (user) => {
   try {
     return typeof user.profile === 'string'
-      ? JSON.parse(user.profile)
+      ? JSON.parse(user.profile) || {}
       : user.profile || {};
   } catch {
     return {};
@@ -42,23 +42,20 @@ exports.runBatch = async ({ db, sendEmail, sendSms, limit = 20 }) => {
     });
   const counts = { accepted: 0, failed: 0, unknown: 0, skipped: 0 };
   for (let i = 0; i < limit; i++) {
-    const job = await db.transaction(async (trx) => {
-      const row = await trx('notification_delivery')
-        .where({ status: 'queued' })
-        .orderBy('id')
-        .forUpdate()
-        .first();
-      if (!row) return null;
-      await trx('notification_delivery')
-        .where({ id: row.id })
-        .update({
-          status: 'processing',
-          attempts: row.attempts + 1,
-          updated_at: trx.fn.now(),
-        });
-      return row;
-    });
+    // Compare-and-set claim: one winner, no gap locks held across queue scans.
+    const job = await db('notification_delivery')
+      .where({ status: 'queued' })
+      .orderBy('id')
+      .first();
     if (!job) break;
+    const claimed = await db('notification_delivery')
+      .where({ id: job.id, status: 'queued' })
+      .update({
+        status: 'processing',
+        attempts: job.attempts + 1,
+        updated_at: db.fn.now(),
+      });
+    if (!claimed) continue;
     let update;
     try {
       const user = await db('employees')

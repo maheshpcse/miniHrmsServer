@@ -1,0 +1,285 @@
+{
+  "version": 1,
+  "description": "Optional external channels are off; no personal or financial details in notification payloads.",
+  "categories": [
+    {
+      "code": "NOTIFICATION_EVENT",
+      "name": "Notification event definitions",
+      "values": [
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "PUNCH_CONFIRMATION",
+          "name": "Punch Confirmation"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "LATE_ATTENDANCE",
+          "name": "Late Attendance"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "ATTENDANCE_CORRECTION",
+          "name": "Attendance Correction"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "LEAVE_REQUEST",
+          "name": "Leave Request"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "LEAVE_DECISION",
+          "name": "Leave Decision"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "DOCUMENT_EXPIRY",
+          "name": "Document Expiry"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "NOTICE_PUBLICATION",
+          "name": "Notice Publication"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "EVENT_REMINDER",
+          "name": "Event Reminder"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "CELEBRATION",
+          "name": "Celebration"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "RESIGNATION",
+          "name": "Resignation"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "EXIT_CLEARANCE",
+          "name": "Exit Clearance"
+        },
+        {
+          "state": "active",
+          "config": {
+            "portal": true,
+            "push": true,
+            "email": false,
+            "sms": false,
+            "requires_browser_opt_in": true,
+            "message": "Open your HR workspace to view the update."
+          },
+          "code": "PAYSLIP_PUBLICATION",
+          "name": "Payslip Publication"
+        }
+      ]
+    },
+    {
+      "code": "NOTIFICATION_PREFERENCE",
+      "name": "Notification preference types",
+      "values": [
+        {
+          "code": "PORTAL",
+          "name": "Portal",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "BROWSER_PUSH",
+          "name": "Browser Push",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EMAIL",
+          "name": "Email",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "SMS",
+          "name": "Sms",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "TIMEZONE",
+      "name": "Timezone starter catalog",
+      "values": [
+        {
+          "state": "active",
+          "config": {
+            "iana": "UTC"
+          },
+          "code": "UTC",
+          "name": "UTC"
+        },
+        {
+          "state": "active",
+          "config": {
+            "iana": "Europe/London"
+          },
+          "code": "EUROPE_LONDON",
+          "name": "Europe/London"
+        },
+        {
+          "state": "active",
+          "config": {
+            "iana": "America/New_York"
+          },
+          "code": "AMERICA_NEW_YORK",
+          "name": "America/New_York"
+        },
+        {
+          "state": "active",
+          "config": {
+            "iana": "America/Chicago"
+          },
+          "code": "AMERICA_CHICAGO",
+          "name": "America/Chicago"
+        },
+        {
+          "state": "active",
+          "config": {
+            "iana": "America/Denver"
+          },
+          "code": "AMERICA_DENVER",
+          "name": "America/Denver"
+        },
+        {
+          "state": "active",
+          "config": {
+            "iana": "America/Los_Angeles"
+          },
+          "code": "AMERICA_LOS_ANGELES",
+          "name": "America/Los_Angeles"
+        },
+        {
+          "state": "active",
+          "config": {
+            "iana": "Asia/Kolkata"
+          },
+          "code": "ASIA_KOLKATA",
+          "name": "Asia/Kolkata"
+        },
+        {
+          "state": "active",
+          "config": {
+            "iana": "Asia/Singapore"
+          },
+          "code": "ASIA_SINGAPORE",
+          "name": "Asia/Singapore"
+        },
+        {
+          "state": "active",
+          "config": {
+            "iana": "Asia/Tokyo"
+          },
+          "code": "ASIA_TOKYO",
+          "name": "Asia/Tokyo"
+        },
+        {
+          "state": "active",
+          "config": {
+            "iana": "Asia/Dubai"
+          },
+          "code": "ASIA_DUBAI",
+          "name": "Asia/Dubai"
+        }
+      ]
+    }
+  ],
+  "catalog": []
+}

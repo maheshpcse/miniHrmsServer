@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "description": "System role definitions and supported runtime permission registry.",
+  "categories": [
+    {
+      "code": "ROLE",
+      "name": "Role definitions",
+      "values": [
+        {
+          "state": "active",
+          "config": {
+            "runtime_role": "admin",
+            "scope": "organization"
+          },
+          "code": "SUPER_ADMIN",
+          "name": "System administrator"
+        },
+        {
+          "state": "active",
+          "config": {
+            "runtime_role": "hr_admin",
+            "scope": "organization"
+          },
+          "code": "HR_ADMIN",
+          "name": "HR administrator"
+        },
+        {
+          "state": "active",
+          "config": {
+            "runtime_role": "hr",
+            "scope": "organization"
+          },
+          "code": "HR_MANAGER",
+          "name": "HR manager"
+        },
+        {
+          "state": "active",
+          "config": {
+            "runtime_role": "fm",
+            "scope": "organization"
+          },
+          "code": "PAYROLL_ADMIN",
+          "name": "Payroll administrator"
+        },
+        {
+          "state": "template",
+          "config": {
+            "runtime_role": null,
+            "scope": "module",
+            "activation_requirement": "Requires module-specific/read-only API authorization before assignment."
+          },
+          "code": "ATTENDANCE_ADMIN",
+          "name": "Attendance administrator"
+        },
+        {
+          "state": "template",
+          "config": {
+            "runtime_role": null,
+            "scope": "module",
+            "activation_requirement": "Requires module-specific/read-only API authorization before assignment."
+          },
+          "code": "LEAVE_ADMIN",
+          "name": "Leave administrator"
+        },
+        {
+          "state": "template",
+          "config": {
+            "runtime_role": null,
+            "scope": "module",
+            "activation_requirement": "Requires module-specific/read-only API authorization before assignment."
+          },
+          "code": "DOCUMENT_ADMIN",
+          "name": "Document administrator"
+        },
+        {
+          "state": "template",
+          "config": {
+            "runtime_role": null,
+            "scope": "module",
+            "activation_requirement": "Requires module-specific/read-only API authorization before assignment."
+          },
+          "code": "ENGAGEMENT_ADMIN",
+          "name": "Engagement administrator"
+        },
+        {
+          "state": "active",
+          "config": {
+            "runtime_role": "rm",
+            "scope": "team"
+          },
+          "code": "MANAGER",
+          "name": "Reporting manager"
+        },
+        {
+          "state": "active",
+          "config": {
+            "runtime_role": "employee",
+            "scope": "self"
+          },
+          "code": "EMPLOYEE",
+          "name": "Employee"
+        },
+        {
+          "state": "template",
+          "config": {
+            "runtime_role": null,
+            "scope": "read_only",
+            "activation_requirement": "Requires module-specific/read-only API authorization before assignment."
+          },
+          "code": "AUDITOR",
+          "name": "Auditor"
+        }
+      ]
+    }
+  ],
+  "catalog": [
+    {
+      "kind": "permissions",
+      "code": "hr:manage",
+      "name": "Manage HR operations",
+      "payload": {},
+      "status": 1
+    },
+    {
+      "kind": "permissions",
+      "code": "payroll:manage",
+      "name": "Manage payroll",
+      "payload": {},
+      "status": 1
+    },
+    {
+      "kind": "permissions",
+      "code": "employees:read",
+      "name": "Read employees",
+      "payload": {},
+      "status": 1
+    },
+    {
+      "kind": "permissions",
+      "code": "employees:write",
+      "name": "Manage employees",
+      "payload": {},
+      "status": 1
+    },
+    {
+      "kind": "permissions",
+      "code": "settings:write",
+      "name": "Manage settings",
+      "payload": {},
+      "status": 1
+    },
+    {
+      "kind": "permissions",
+      "code": "requests:review",
+      "name": "Review requests",
+      "payload": {},
+      "status": 1
+    },
+    {
+      "kind": "permissions",
+      "code": "notifications:write",
+      "name": "Publish notifications",
+      "payload": {},
+      "status": 1
+    }
+  ]
+}

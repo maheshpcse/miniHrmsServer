@@ -104,6 +104,8 @@ async function request(url,method='GET',body,token){const response=await fetch('
  console.log('PASS: editable profile, protected email/access, duplicate username rollback, session-authenticated password change without current password and other-session revocation');
  await require('./core.integration')({db,request,token,userId});
  await require('./module-revision.integration')({db,request,token,userId});
+ await require('./workspace-expansion.integration')({db,request,token,userId});
+ await require('./master-seeds.integration')({db,request});
  await request('/auth/logout','POST',{},token);assert.strictEqual((await request('/dashboard','GET',null,token)).status,401);
  console.log('PASS: recovery delivery adapter, invalid code rejection, single-use codes and session revocation');
  // Reset only test rate limits so browser checks can exercise the seeded test accounts.

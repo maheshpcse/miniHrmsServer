@@ -1,0 +1,285 @@
+{
+  "version": 1,
+  "description": "Organization setup templates; not automatically assigned to a tenant.",
+  "categories": [
+    {
+      "code": "EMPLOYMENT_TYPE",
+      "name": "EMPLOYMENT TYPE",
+      "values": [
+        {
+          "code": "FULL_TIME",
+          "name": "Full Time",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "PART_TIME",
+          "name": "Part Time",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "CONTRACT",
+          "name": "Contract",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "INTERN",
+          "name": "Intern",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "TEMPORARY",
+          "name": "Temporary",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "EMPLOYEE_STATUS",
+      "name": "EMPLOYEE STATUS",
+      "values": [
+        {
+          "code": "ACTIVE",
+          "name": "Active",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "PENDING",
+          "name": "Pending",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "INACTIVE",
+          "name": "Inactive",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EXITED",
+          "name": "Exited",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "RELATIONSHIP_TYPE",
+      "name": "RELATIONSHIP TYPE",
+      "values": [
+        {
+          "code": "SPOUSE",
+          "name": "Spouse",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "PARENT",
+          "name": "Parent",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "CHILD",
+          "name": "Child",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "SIBLING",
+          "name": "Sibling",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EMERGENCY_CONTACT",
+          "name": "Emergency Contact",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "DEPARTMENT",
+      "name": "DEPARTMENT",
+      "values": [
+        {
+          "code": "HUMAN_RESOURCES",
+          "name": "Human Resources",
+          "state": "template",
+          "config": {}
+        },
+        {
+          "code": "FINANCE",
+          "name": "Finance",
+          "state": "template",
+          "config": {}
+        },
+        {
+          "code": "OPERATIONS",
+          "name": "Operations",
+          "state": "template",
+          "config": {}
+        },
+        {
+          "code": "ENGINEERING",
+          "name": "Engineering",
+          "state": "template",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "DESIGNATION",
+      "name": "DESIGNATION",
+      "values": [
+        {
+          "code": "HR_SPECIALIST",
+          "name": "Hr Specialist",
+          "state": "template",
+          "config": {}
+        },
+        {
+          "code": "TEAM_LEAD",
+          "name": "Team Lead",
+          "state": "template",
+          "config": {}
+        },
+        {
+          "code": "SPECIALIST",
+          "name": "Specialist",
+          "state": "template",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "BUSINESS_UNIT",
+      "name": "BUSINESS UNIT",
+      "values": [
+        {
+          "code": "CORPORATE",
+          "name": "Corporate",
+          "state": "template",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "COST_CENTER",
+      "name": "COST CENTER",
+      "values": [
+        {
+          "code": "GENERAL",
+          "name": "General",
+          "state": "template",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "JOB_GRADE",
+      "name": "JOB GRADE",
+      "values": [
+        {
+          "code": "ENTRY",
+          "name": "Entry",
+          "state": "template",
+          "config": {}
+        },
+        {
+          "code": "PROFESSIONAL",
+          "name": "Professional",
+          "state": "template",
+          "config": {}
+        },
+        {
+          "code": "LEAD",
+          "name": "Lead",
+          "state": "template",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "EMPLOYMENT_LEVEL",
+      "name": "EMPLOYMENT LEVEL",
+      "values": [
+        {
+          "code": "INDIVIDUAL_CONTRIBUTOR",
+          "name": "Individual Contributor",
+          "state": "template",
+          "config": {}
+        },
+        {
+          "code": "MANAGER",
+          "name": "Manager",
+          "state": "template",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "SKILL_CATEGORY",
+      "name": "SKILL CATEGORY",
+      "values": [
+        {
+          "code": "TECHNICAL",
+          "name": "Technical",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "FUNCTIONAL",
+          "name": "Functional",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "INTERPERSONAL",
+          "name": "Interpersonal",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "ORGANIZATION_SETUP",
+      "name": "Organization setup",
+      "values": [
+        {
+          "state": "template",
+          "config": {
+            "required_fields": [
+              "name",
+              "timezone"
+            ],
+            "requires_tenant_configuration": true
+          },
+          "code": "LEGAL_ENTITY",
+          "name": "Legal entity"
+        },
+        {
+          "state": "template",
+          "config": {
+            "required_fields": [
+              "name",
+              "country",
+              "region",
+              "timezone"
+            ],
+            "requires_tenant_configuration": true
+          },
+          "code": "LOCATION",
+          "name": "Work location"
+        }
+      ]
+    }
+  ],
+  "catalog": []
+}

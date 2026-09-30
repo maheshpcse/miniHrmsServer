@@ -100,6 +100,7 @@ server.on('error', error => {
 });
 
 process.on('SIGTERM', () => {
+    if (portalRoutes.stopPushWorker) portalRoutes.stopPushWorker();
     server.close(() => Knexx.knex.destroy().then(() => process.exit(0)));
     setTimeout(() => process.exit(1), 10000).unref();
 });

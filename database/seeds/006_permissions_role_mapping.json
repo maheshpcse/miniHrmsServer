@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "description": "Supported roles use the current permission registry; existing grants are preserved. Specialized roles remain unassignable templates.",
+  "categories": [
+    {
+      "code": "APPROVAL_WORKFLOW",
+      "name": "Approval workflows",
+      "values": [
+        {
+          "code": "LEAVE",
+          "name": "Leave",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "ATTENDANCE_CORRECTION",
+          "name": "Attendance Correction",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "OVERTIME",
+          "name": "Overtime",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "RESIGNATION",
+          "name": "Resignation",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "PAYROLL_REVIEW",
+          "name": "Payroll Review",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "APPROVAL_LEVEL",
+      "name": "Approval levels",
+      "values": [
+        {
+          "code": "REPORTING_MANAGER",
+          "name": "Reporting Manager",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "HR_REVIEW",
+          "name": "Hr Review",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "PAYROLL_REVIEWER",
+          "name": "Payroll Reviewer",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    }
+  ],
+  "catalog": [
+    {
+      "kind": "roles",
+      "code": "hr_admin",
+      "name": "HR administrator",
+      "payload": {
+        "permissions": "hr:manage,employees:read,employees:write,requests:review,notifications:write"
+      },
+      "status": 1
+    },
+    {
+      "kind": "roles",
+      "code": "hr",
+      "name": "HR manager",
+      "payload": {
+        "permissions": "hr:manage,employees:read,employees:write,requests:review,notifications:write"
+      },
+      "status": 1
+    },
+    {
+      "kind": "roles",
+      "code": "fm",
+      "name": "Payroll administrator",
+      "payload": {
+        "permissions": "payroll:manage"
+      },
+      "status": 1
+    },
+    {
+      "kind": "roles",
+      "code": "rm",
+      "name": "Reporting manager",
+      "payload": {
+        "permissions": "requests:review"
+      },
+      "status": 1
+    },
+    {
+      "kind": "roles",
+      "code": "employee",
+      "name": "Employee",
+      "payload": {
+        "permissions": ""
+      },
+      "status": 1
+    }
+  ]
+}

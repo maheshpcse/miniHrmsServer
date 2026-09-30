@@ -1,0 +1,385 @@
+{
+  "version": 1,
+  "description": "Document, communication, engagement and exit reference codes.",
+  "categories": [
+    {
+      "code": "DOCUMENT_CATEGORY",
+      "name": "DOCUMENT CATEGORY",
+      "values": [
+        {
+          "code": "IDENTITY",
+          "name": "Identity",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EMPLOYMENT",
+          "name": "Employment",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EDUCATION",
+          "name": "Education",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "POLICY",
+          "name": "Policy",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "PAYROLL",
+          "name": "Payroll",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "SEPARATION",
+          "name": "Separation",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "DOCUMENT_TYPE",
+      "name": "DOCUMENT TYPE",
+      "values": [
+        {
+          "code": "IDENTITY_PROOF",
+          "name": "Identity Proof",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "ADDRESS_PROOF",
+          "name": "Address Proof",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EMPLOYMENT_CONTRACT",
+          "name": "Employment Contract",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EDUCATION_CERTIFICATE",
+          "name": "Education Certificate",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "POLICY_ACKNOWLEDGEMENT",
+          "name": "Policy Acknowledgement",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "NOTICE_CATEGORY",
+      "name": "NOTICE CATEGORY",
+      "values": [
+        {
+          "code": "GENERAL",
+          "name": "General",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "POLICY",
+          "name": "Policy",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "HR_UPDATE",
+          "name": "Hr Update",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "URGENT",
+          "name": "Urgent",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "MESSAGE_CHANNEL",
+      "name": "MESSAGE CHANNEL",
+      "values": [
+        {
+          "code": "PORTAL",
+          "name": "Portal",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "PUSH",
+          "name": "Push",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EMAIL",
+          "name": "Email",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "SMS",
+          "name": "Sms",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "ENGAGEMENT_TYPE",
+      "name": "ENGAGEMENT TYPE",
+      "values": [
+        {
+          "code": "SURVEY",
+          "name": "Survey",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "POLL",
+          "name": "Poll",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "RECOGNITION",
+          "name": "Recognition",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "RECOGNITION_TYPE",
+      "name": "RECOGNITION TYPE",
+      "values": [
+        {
+          "code": "TEAMWORK",
+          "name": "Teamwork",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "INNOVATION",
+          "name": "Innovation",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "SERVICE",
+          "name": "Service",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EXCELLENCE",
+          "name": "Excellence",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "EVENT_TYPE",
+      "name": "EVENT TYPE",
+      "values": [
+        {
+          "code": "MEETING",
+          "name": "Meeting",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "TRAINING",
+          "name": "Training",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "CELEBRATION",
+          "name": "Celebration",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "WELLBEING",
+          "name": "Wellbeing",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "EXIT_REASON",
+      "name": "EXIT REASON",
+      "values": [
+        {
+          "code": "RESIGNATION",
+          "name": "Resignation",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "RETIREMENT",
+          "name": "Retirement",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "CONTRACT_END",
+          "name": "Contract End",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "OTHER",
+          "name": "Other",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "CLEARANCE_TYPE",
+      "name": "CLEARANCE TYPE",
+      "values": [
+        {
+          "code": "MANAGER",
+          "name": "Manager",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "HR",
+          "name": "Hr",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "IT",
+          "name": "It",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "FINANCE",
+          "name": "Finance",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "FACILITIES",
+          "name": "Facilities",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "ASSET_TYPE",
+      "name": "ASSET TYPE",
+      "values": [
+        {
+          "code": "LAPTOP",
+          "name": "Laptop",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "PHONE",
+          "name": "Phone",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "ACCESS_CARD",
+          "name": "Access Card",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "OTHER",
+          "name": "Other",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "SEPARATION_DOCUMENT_TYPE",
+      "name": "SEPARATION DOCUMENT TYPE",
+      "values": [
+        {
+          "code": "RELIEVING_LETTER",
+          "name": "Relieving Letter",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "EXPERIENCE_LETTER",
+          "name": "Experience Letter",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "SETTLEMENT_STATEMENT",
+          "name": "Settlement Statement",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    },
+    {
+      "code": "DATA_RETENTION_CLASS",
+      "name": "DATA RETENTION CLASS",
+      "values": [
+        {
+          "code": "PERSONNEL",
+          "name": "Personnel",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "PAYROLL",
+          "name": "Payroll",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "ATTENDANCE",
+          "name": "Attendance",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "COMMUNICATION",
+          "name": "Communication",
+          "state": "active",
+          "config": {}
+        },
+        {
+          "code": "AUDIT",
+          "name": "Audit",
+          "state": "active",
+          "config": {}
+        }
+      ]
+    }
+  ],
+  "catalog": []
+}
