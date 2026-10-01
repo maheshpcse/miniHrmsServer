@@ -16,6 +16,11 @@ const connection = mysql.createConnection({
     charset: 'utf8'
 });
 
+// prevent unhandled connection errors (e.g. idle timeout) from crashing the process
+connection.on('error', (err) => {
+    logger.error('Database connection error', err);
+});
+
 // checking database connection with mysql config
 const checkDatabaseConnection = async (request, response, next) => {
     await connection.connect(function (err, data) {
